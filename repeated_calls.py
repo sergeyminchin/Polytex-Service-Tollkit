@@ -23,7 +23,7 @@ def fuzzy_column_match(columns):
             mapping["call_id"] = col
         elif "מכשיר" in c:
             mapping["device_id"] = col
-        elif "תאריך" in c and "קריאה" in c:
+        elif "תאריך" in c:
             mapping["call_date"] = col
     return mapping
 
