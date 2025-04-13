@@ -28,6 +28,7 @@ def run_app():
         df = df.sort_values(by=[col_map["device_id"], col_map["date"]])
 
         output_rows = {}
+        summary_rows = []
         total_pairs = 0
 
         for tech in df[col_map["tech"]].dropna().unique():
@@ -73,24 +74,23 @@ def run_app():
         st.success(f"📊 Found {total_pairs} repeated call pairs across {len(output_rows)} technicians.")
 
         output = BytesIO()
-        
-summary_rows = []
-    summary_rows = []
-    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-        for tech, df_out in output_rows.items():
-            df_out.to_excel(writer, sheet_name=str(tech)[:31], index=False)
-            summary_rows.append({
-                "Technician": tech,
-                "Repeated Calls": len(df_out),
-                "Total Calls": len(df[df[col_map["tech"]] == tech]),
-                "Repeated %": round(len(df_out) / len(df[df[col_map["tech"]] == tech]) * 100, 2) if len(df[df[col_map["tech"]] == tech]) > 0 else 0
-            })
-        summary_df = pd.DataFrame(summary_rows)
-        summary_df.to_excel(writer, sheet_name="Summary", index=False)
-        output.seek(0)
-    st.download_button(
-        label="📥 Download Excel File with Technician Tabs",
-        data=output,
-        file_name="repeated_calls_by_technician_tabs.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+        with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+            for tech, df_out in output_rows.items():
+                df_out.to_excel(writer, sheet_name=str(tech)[:31], index=False)
+                summary_rows.append({
+                    "Technician": tech,
+                    "Repeated Calls": len(df_out),
+                    "Total Calls": len(df[df[col_map["tech"]] == tech]),
+                    "Repeated %": round(len(df_out) / len(df[df[col_map["tech"]] == tech]) * 100, 2) if len(df[df[col_map["tech"]] == tech]) > 0 else 0
+                })
+
+            summary_df = pd.DataFrame(summary_rows)
+            summary_df.to_excel(writer, sheet_name="Summary", index=False)
+            output.seek(0)
+
+        st.download_button(
+            label="📥 Download Excel File with Technician Tabs",
+            data=output,
+            file_name="repeated_calls_by_technician_tabs.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
