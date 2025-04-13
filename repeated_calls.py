@@ -5,6 +5,7 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
+from email_util import send_excel_email
 
 def run_app():
     st.title("🔁 Repeated Calls by Technician")
@@ -140,3 +141,26 @@ def run_app():
             file_name="repeated_calls_by_technician_tabs.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+        from email_util import send_excel_email
+
+st.markdown("📧 **Optional: Send report by email**")
+send_email = st.checkbox("📤 Send this report via email")
+
+if send_email:
+    recipient = st.text_input("Recipient Email")
+    if recipient and st.button("📨 Send Now"):
+        with st.spinner("Sending email..."):
+            result = send_excel_email(
+                to_email=recipient,
+                subject="📊 Polytex Service Report",
+                body="Attached is your service report from Polytex Toolkit.",
+                attachment_bytes=final_output.getvalue(),  # or `output.getvalue()` depending on app
+                filename="report.xlsx",
+                from_email="polytexserviceapp@gmail.com",
+                app_password="glwr znyx pwwh aobk"  # <- 🔐 DO NOT USE real Gmail password
+            )
+        if result is True:
+            st.success("✅ Email sent successfully!")
+        else:
+            st.error(f"❌ Failed to send email: {result}")
+
