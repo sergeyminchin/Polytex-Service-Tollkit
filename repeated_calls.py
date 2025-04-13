@@ -4,7 +4,6 @@ from io import BytesIO
 
 def run_app():
     st.title("🔁 Repeated Calls Analyzer (Technician Breakdown)")
-    st.info("🧪 Debug: run_app() has been triggered.")
 
     uploaded_file = st.file_uploader("Upload Service Calls Excel File", type=["xlsx"])
     if uploaded_file:
