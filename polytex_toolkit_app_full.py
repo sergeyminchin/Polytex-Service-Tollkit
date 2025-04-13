@@ -30,9 +30,9 @@ selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
 # Dynamic module loading
 if selected_app:
     app_file = app_options[selected_app]
-    if app_file == "repeated_calls_by_technician_app":
-        import repeated_calls_by_technician_app
-        repeated_calls_by_technician_app.run_app()
+    if app_file == "repeated_calls":
+        import repeated_calls
+        repeated_calls.run_app()
     else:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
