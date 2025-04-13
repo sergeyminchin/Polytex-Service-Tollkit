@@ -6,13 +6,6 @@ import os
 from PIL import Image
 
 
-# Display logo
-try:
-    logo = Image.open("logo.png")
-    st.image(logo, use_container_width=False)
-except Exception:
-    st.warning("Logo not found.")
-
 st.title("🔍 RFID Mismatch Analyzer")
 
 uploaded_file = st.file_uploader("Upload an RFID Excel File", type=["xlsx"])
