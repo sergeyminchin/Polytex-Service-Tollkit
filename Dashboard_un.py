@@ -5,9 +5,6 @@ import plotly.express as px
 from PIL import Image
 import io
 
-# Load and display logo
-logo = Image.open("logo.png")
-st.image(logo, use_container_width=False)
 
 # Sidebar: Upload Excel files
 st.sidebar.header("Upload Excel Files")
