@@ -140,3 +140,26 @@ def run_app():
             file_name="repeated_calls_by_technician_tabs.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+        from email_util import send_excel_email
+
+st.markdown("📧 **Optional: Send report by email**")
+send_email = st.checkbox("📤 Send this report via email")
+
+if send_email:
+    recipient = st.text_input("Recipient Email")
+    if recipient and st.button("📨 Send Now"):
+        with st.spinner("Sending email..."):
+            result = send_excel_email(
+                to_email=recipient,
+                subject="📊 Polytex Repeated Calls Report",
+                body="Attached is the repeated calls analysis report generated via Polytex Service Toolkit.",
+                attachment_bytes=final_output.getvalue(),
+                filename="repeated_calls_by_technician_tabs.xlsx",
+                from_email="polytexserviceapp@gmail.com",
+                app_password="glwr znyx pwwh aobk"  # Replace with your Gmail app password
+            )
+        if result is True:
+            st.success("✅ Email sent successfully!")
+        else:
+            st.error(f"❌ Failed to send email: {result}")
+
