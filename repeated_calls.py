@@ -88,7 +88,7 @@ with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
 
         summary_df = pd.DataFrame(summary_rows)
         summary_df.to_excel(writer, sheet_name="Summary", index=False)
-output.seek(0)
+        output.seek(0)
         st.download_button(
             label="📥 Download Excel File with Technician Tabs",
             data=output,
