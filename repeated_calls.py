@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 
 def run_app():
-    st.title("🔁 Repeated Calls by Technician (Tabs per לטיפול)")
+    st.title("🔁 Repeated Calls by Technician")
 
     uploaded_file = st.file_uploader("Upload Service Calls Excel File", type=["xlsx"])
     if uploaded_file:
