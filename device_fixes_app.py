@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 # Set favicon and page config
 # Display title
-    st.title("🔧 Device Fixes Analyzer")
+st.title("🔧 Device Fixes Analyzer")
 uploaded_file = st.file_uploader("Upload your Excel file (must include a 'DataSheet' tab)", type=["xlsx"])
 if uploaded_file:
     df = pd.read_excel(uploaded_file, sheet_name='DataSheet')
