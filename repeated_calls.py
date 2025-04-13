@@ -75,23 +75,22 @@ def run_app():
         output = BytesIO()
         
 summary_rows = []
-with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-
-            for tech, df_out in output_rows.items():
-                df_out.to_excel(writer, sheet_name=str(tech)[:31], index=False)
+    summary_rows = []
+    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+        for tech, df_out in output_rows.items():
+            df_out.to_excel(writer, sheet_name=str(tech)[:31], index=False)
             summary_rows.append({
-        "Technician": tech,
-        "Repeated Calls": len(df_out),
-        "Total Calls": len(df[df[col_map["tech"]] == tech]),
-        "Repeated %": round(len(df_out) / len(df[df[col_map["tech"]] == tech]) * 100, 2) if len(df[df[col_map["tech"]] == tech]) > 0 else 0
-    })
-
+                "Technician": tech,
+                "Repeated Calls": len(df_out),
+                "Total Calls": len(df[df[col_map["tech"]] == tech]),
+                "Repeated %": round(len(df_out) / len(df[df[col_map["tech"]] == tech]) * 100, 2) if len(df[df[col_map["tech"]] == tech]) > 0 else 0
+            })
         summary_df = pd.DataFrame(summary_rows)
         summary_df.to_excel(writer, sheet_name="Summary", index=False)
         output.seek(0)
-        st.download_button(
-            label="📥 Download Excel File with Technician Tabs",
-            data=output,
-            file_name="repeated_calls_by_technician_tabs.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+    st.download_button(
+        label="📥 Download Excel File with Technician Tabs",
+        data=output,
+        file_name="repeated_calls_by_technician_tabs.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
