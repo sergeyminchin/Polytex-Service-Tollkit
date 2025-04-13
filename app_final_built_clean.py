@@ -5,8 +5,7 @@ from io import BytesIO
 import datetime as dt
 from PIL import Image
 
-logo = Image.open("logo.png")
-st.image(logo, width=200)
+
 
 st.title(" אפליקציית ניתוח קריאות שירות וחלקים")
 
