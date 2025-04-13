@@ -79,7 +79,7 @@ with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
 
             for tech, df_out in output_rows.items():
                 df_out.to_excel(writer, sheet_name=str(tech)[:31], index=False)
-    summary_rows.append({
+            summary_rows.append({
         "Technician": tech,
         "Repeated Calls": len(df_out),
         "Total Calls": len(df[df[col_map["tech"]] == tech]),
@@ -87,7 +87,7 @@ with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
     })
 
         summary_df = pd.DataFrame(summary_rows)
-    summary_df.to_excel(writer, sheet_name="Summary", index=False)
+        summary_df.to_excel(writer, sheet_name="Summary", index=False)
 output.seek(0)
         st.download_button(
             label="📥 Download Excel File with Technician Tabs",
