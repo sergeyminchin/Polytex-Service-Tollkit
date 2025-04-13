@@ -2,10 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 # Set favicon and page config
-# Display logo and title
-col1 = st.columns([1, 6])
-
-with col1:
+# Display title
     st.title("🔧 Device Fixes Analyzer")
 uploaded_file = st.file_uploader("Upload your Excel file (must include a 'DataSheet' tab)", type=["xlsx"])
 if uploaded_file:
