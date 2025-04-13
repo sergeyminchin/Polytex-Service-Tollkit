@@ -4,9 +4,7 @@ import plotly.express as px
 from PIL import Image
 import io
 
-# Load and display logo
-logo = Image.open("logo.png")
-st.image(logo, use_container_width=False)
+
 
 # Load preprocessed data
 total_calls_summary = pd.DataFrame({
