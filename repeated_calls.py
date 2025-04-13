@@ -5,7 +5,7 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
-from email_util import send_excel_email
+
 
 
 def run_app():
@@ -142,7 +142,7 @@ def run_app():
             file_name="repeated_calls_by_technician_tabs.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
+from email_util import send_excel_email
 st.markdown("📧 **Optional: Send report by email**")
 send_email = st.checkbox("📤 Send this report via email")
 
