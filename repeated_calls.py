@@ -129,6 +129,11 @@ def run_app():
                         pass
                 adjusted_width = max_length + 2
                 sheet.column_dimensions[get_column_letter(column_cells[0].column)].width = adjusted_width
+
+
+        final_output = BytesIO()
+        wb.save(final_output)
+        final_output.seek(0)
 st.markdown("📧 **Optional: Send report by email**")
 send_email = st.checkbox("📤 Send this report via email")
 
@@ -149,11 +154,6 @@ if send_email:
             st.success("✅ Email sent successfully!")
         else:
             st.error(f"❌ Failed to send email: {result}")
-
-        final_output = BytesIO()
-        wb.save(final_output)
-        final_output.seek(0)
-
         st.success("📊 Analysis complete. Download the Excel file below.")
         st.download_button(
             label="📥 Download Excel File",
