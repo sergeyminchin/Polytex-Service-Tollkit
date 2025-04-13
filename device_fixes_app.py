@@ -116,7 +116,7 @@ if uploaded_file:
         if run_tech_excel:
             with pd.ExcelWriter(output_techs, engine="xlsxwriter") as writer:
                 for tech_name, group in filtered_df.groupby("שם טכנאי"):
-                    sheet_name = str(tech_name)[:31].replace("/", "_").replace("\", "_")
+                    sheet_name = str(tech_name)[:31].replace("/", "_").replace("\\", "_")
                     group.to_excel(writer, sheet_name=sheet_name, index=False)
 
         st.session_state.outputs["main"] = output_main.getvalue()
