@@ -6,12 +6,6 @@ from PIL import Image
 import xlsxwriter
 
 
-# Show logo
-try:
-    logo = Image.open("logo.png")
-    st.image(logo, use_container_width=False)
-except:
-    st.warning("Logo not found")
 
 st.title("🚨 Polytex Alert Analyzer")
 
