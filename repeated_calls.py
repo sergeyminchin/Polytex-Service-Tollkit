@@ -5,6 +5,7 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
+from email_util import send_excel_email
 
 def run_app():
     st.title("🔁 Repeated Calls by Technician")
