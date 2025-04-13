@@ -42,6 +42,6 @@ if selected_app:
 # =======================
 
 st.markdown("---")
-st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – Polytex Service Team")
+st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
 st.markdown("📧 sergeym@polytex.co.il")
 st.markdown("📅 April 2025")
