@@ -5,7 +5,6 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
-from email_util import send_excel_email
 
 def run_app():
     st.title("🔁 Repeated Calls by Technician")
@@ -130,7 +129,14 @@ def run_app():
                 adjusted_width = max_length + 2
                 sheet.column_dimensions[get_column_letter(column_cells[0].column)].width = adjusted_width
 
-
         final_output = BytesIO()
         wb.save(final_output)
         final_output.seek(0)
+
+        st.success("📊 Analysis complete. Download the Excel file below.")
+        st.download_button(
+            label="📥 Download Excel File with Technician Tabs",
+            data=final_output,
+            file_name="repeated_calls_by_technician_tabs.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
