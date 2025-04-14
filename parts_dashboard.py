@@ -5,13 +5,6 @@ from io import BytesIO
 from PIL import Image
 
 st.set_page_config(page_title="Spare Parts Dashboard", layout="wide", page_icon="politex.ico")
-
-try:
-    logo = Image.open("logo.png")
-    st.image(logo, use_container_width=False)
-except:
-    st.warning("🔧 Logo not found.")
-
 st.title("🔧 Spare Parts Usage Summary")
 
 uploaded_file = st.file_uploader("📤 Upload Spare Parts Excel File", type=["xlsx"])
