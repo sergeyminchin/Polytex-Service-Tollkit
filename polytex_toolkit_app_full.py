@@ -23,8 +23,7 @@ app_options = {
     "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
     "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
     "🔧 Fixes per Unit": "device_fixes_app",
-    "📦 ServiceCalls_SpareParts": "app_final_built_clean",
-    "🧭 Keepalive Monitor": "keepalive"
+    "📦 ServiceCalls_SpareParts": "app_final_built_clean"
 }
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
