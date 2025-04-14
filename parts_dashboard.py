@@ -13,11 +13,13 @@ def run_app():
     from io import BytesIO
     from PIL import Image
 
+
     try:
         logo = Image.open("logo.png")
         st.image(logo, use_container_width=False)
     except:
         st.warning("🔧 Logo not found.")
+
     st.title("🔧 Spare Parts Usage Summary")
 
     uploaded_file = st.file_uploader("📤 Upload Spare Parts Excel File", type=["xlsx"])
