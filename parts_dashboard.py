@@ -7,7 +7,6 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
 
 st.set_page_config(page_title="Spare Parts Dashboard", layout="wide", page_icon="logo.png")
-
 def run_app():
 
     import streamlit as st
