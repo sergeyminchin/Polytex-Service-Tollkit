@@ -6,20 +6,14 @@ from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
 
+st.set_page_config(page_title="Spare Parts Dashboard", layout="wide", page_icon="logo.png")
+
 def run_app():
 
     import streamlit as st
     import pandas as pd
     from io import BytesIO
     from PIL import Image
-
-    st.set_page_config(page_title="Spare Parts Dashboard", layout="wide", page_icon="logo.png")
-
-    try:
-        logo = Image.open("logo.png")
-        st.image(logo, use_container_width=False)
-    except:
-        st.warning("🔧 Logo not found.")
 
     st.title("🔧 Spare Parts Usage Summary")
 
