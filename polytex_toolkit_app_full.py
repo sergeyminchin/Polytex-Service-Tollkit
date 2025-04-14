@@ -42,9 +42,20 @@ if selected_app:
     elif app_file == "distribution_transformer_app":
         from distribution_transformer_app import run_transformer_app
         run_transformer_app()
+
     elif app_file == "parts_dashboard":
         import parts_dashboard
         parts_dashboard.run_app()
+
+    else:
+        with open(f"{app_file}.py", "r", encoding="utf-8") as f:
+            exec(f.read(), globals())
+
+    if app_file == "repeated_calls":
+        import repeated_calls
+        repeated_calls.run_app()
+
+    elif app_file == "distribution_transformer_app":
         from distribution_transformer_app import run_transformer_app
         run_transformer_app()
 
