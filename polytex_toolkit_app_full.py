@@ -23,7 +23,8 @@ app_options = {
     "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
     "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
     "🔧 Fixes per Unit": "device_fixes_app",
-    "📦 ServiceCalls_SpareParts": "app_final_built_clean"
+    "📦 ServiceCalls_SpareParts": "app_final_built_clean",
+    "\U0001F4C2 Service Distribution Transformer"
 }
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
