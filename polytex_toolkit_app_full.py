@@ -34,10 +34,7 @@ selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
 # Dynamic module loading
 if selected_app:
     app_file = app_options[selected_app]
-
-    if app_file == "repeated_calls":
-        import repeated_calls
-        repeated_calls.run_app()
+    app_file = app_options[selected_app]
 
     elif app_file == "distribution_transformer_app":
         from distribution_transformer_app import run_transformer_app
@@ -48,6 +45,15 @@ if selected_app:
         parts_dashboard.run_app()
 
     else:
+        with open(f"{app_file}.py", "r", encoding="utf-8") as f:
+            exec(f.read(), globals())
+
+    elif app_file == "distribution_transformer_app":
+        from distribution_transformer_app import run_transformer_app
+        run_transformer_app()
+
+    else:
+        # fallback to exec for legacy tools (no refactor yet)
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
 
