@@ -29,8 +29,6 @@ app_options = {
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
 
-selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
-
 # Dynamic module loading
 if selected_app:
     app_file = app_options[selected_app]
