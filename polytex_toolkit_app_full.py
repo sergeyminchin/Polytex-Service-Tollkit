@@ -40,8 +40,7 @@ if selected_app:
         repeated_calls.run_app()
 
     elif app_file == "distribution_transformer_app":
-        from distribution_transformer_app
-        import run_transformer_app
+        from distribution_transformer_app import run_transformer_app
         run_transformer_app()
     elif app_file == "parts_dashboard":
         import parts_dashboard
