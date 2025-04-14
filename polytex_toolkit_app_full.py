@@ -47,9 +47,6 @@ if selected_app:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
 
-    elif app_file == "distribution_transformer_app":
-        from distribution_transformer_app import run_transformer_app
-        run_transformer_app()
 
     else:
         # fallback to exec for legacy tools (no refactor yet)
