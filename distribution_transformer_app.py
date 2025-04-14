@@ -7,7 +7,7 @@ import re
 # Move this to the main app file if this will be part of a larger toolkit
 
 def run_transformer_app():
-    st.image("logo.png", use_container_width=True)
+    st.image("logo.png", use_container_width=false)
     st.title("📂 Service Distribution Transformer")
     st.markdown("Upload an Excel file and get an updated version with normalized \"מק\"ט\" and \"תאור\" values.")
 
