@@ -3,11 +3,12 @@ import pandas as pd
 import io
 import re
 
-# IMPORTANT: page config must be in main app, not here if run inside toolkit
+# ⚠️ DO NOT set page config inside this function if you're importing it in another Streamlit app
+# Move this to the main app file if this will be part of a larger toolkit
 
 def run_transformer_app():
     st.image("logo.png", use_container_width=True)
-    st.title("\U0001F4C2 Service Distribution Transformer")
+    st.title("📂 Service Distribution Transformer")
     st.markdown("Upload an Excel file and get an updated version with normalized \"מק\"ט\" and \"תאור\" values.")
 
     def transform_row(makat: str):
@@ -48,7 +49,7 @@ def run_transformer_app():
                 df.to_excel(output, index=False)
                 output.seek(0)
 
-                st.download_button("\U0001F4E5 Download Updated Excel",
+                st.download_button("📥 Download Updated Excel",
                                    data=output,
                                    file_name="Updated_Distribution_Data.xlsx",
                                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
