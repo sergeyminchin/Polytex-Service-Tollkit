@@ -1,4 +1,5 @@
 
+
 import streamlit as st
 from email_util import send_excel_email
 from PIL import Image
@@ -39,6 +40,9 @@ if selected_app:
         repeated_calls.run_app()
 
     elif app_file == "distribution_transformer_app":
+    elif app_file == "parts_dashboard":
+        import parts_dashboard
+        parts_dashboard.run_app()
         from distribution_transformer_app import run_transformer_app
         run_transformer_app()
 
