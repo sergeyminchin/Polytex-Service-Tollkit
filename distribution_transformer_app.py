@@ -3,11 +3,12 @@ import pandas as pd
 import io
 import re
 
-# ---- Page config ----
-st.set_page_config(page_title="Models Transformer",
+# ---- ✅ MUST be the first Streamlit command ----
+st.set_page_config(page_title="Service Distribution Transformer",
                    page_icon="politex.ico",
                    layout="wide")
 
+# ---- Page UI ----
 st.image("logo.png", use_container_width=False)
 st.title("\U0001F4C2 Service Distribution Transformer")
 st.markdown("Upload an Excel file and get an updated version with normalized \"מק\"ט\" and \"תאור\" values.")
