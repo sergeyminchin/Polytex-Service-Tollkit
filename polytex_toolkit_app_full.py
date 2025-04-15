@@ -24,7 +24,8 @@ app_options = {
     "🔧 Fixes per Unit": "device_fixes_app",
     "📦 ServiceCalls_SpareParts": "app_final_built_clean",
     "\U0001F4C2 Service Distribution Transformer": "distribution_transformer_app",
-    "📦 Spare Parts Usage": "parts_dashboard"
+    "📦 Spare Parts Usage": "parts_dashboard",
+    "🧩 System Mapper Tool": "system_mapper_app" 
 }
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
@@ -43,6 +44,10 @@ if selected_app:
     elif app_file == "parts_dashboard":
         import parts_dashboard
         parts_dashboard.run_app()
+        
+     elif app_file == "system_mapper_app":
+        import system_mapper_app
+        system_mapper_app.run_app()
 
     else:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
