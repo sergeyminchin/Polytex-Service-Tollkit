@@ -45,7 +45,7 @@ def run_transformer_app():
                 st.dataframe(df.head(20))
 
                 output = io.BytesIO()
-                df.to_excel(output, index=False)
+                df.to_excel(output, index=False, sheet_name="DataSheet")
                 output.seek(0)
 
                 st.download_button("📥 Download Updated Excel",
