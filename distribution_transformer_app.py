@@ -4,7 +4,7 @@ import pandas as pd
 from io import BytesIO
 
 def map_system(row):
-    part_code = str(row.get("מק"ט", "")).upper()
+    part_code = str(row.get("מק\"ט", "")).upper()
     if any(x in part_code for x in ["D200", "D300"]) and not any(x in part_code for x in ["PRO", "P"]):
         return "DX00", "DX00 Distribution Cabinet"
     elif any(x in part_code for x in ["200P", "300P", "PRO"]):
@@ -22,7 +22,7 @@ def map_system(row):
     elif part_code == "POL-R11I-00000A":
         return "R110", "R110 Return Unit"
     else:
-        return row["מק"ט"], row["תאור"]
+        return row["מק\"ט"], row["תאור"]
 
 def run_transformer_app():
     st.title("📦 Distribution Transformer Analyzer")
