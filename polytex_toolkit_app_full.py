@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 from email_util import send_excel_email
 from PIL import Image
@@ -31,7 +29,6 @@ app_options = {
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
 
-# Dynamic module loading
 if selected_app:
     app_file = app_options[selected_app]
 
@@ -51,10 +48,11 @@ if selected_app:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
 
-    # =======================
-    # חתימה בסוף הדף - מחוץ לבלוקים
-    # =======================
-    st.markdown("---")
-    st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
-    st.markdown("📧 sergeym@polytex.co.il")
-    st.markdown("📅 April 2025")
+# =======================
+# חתימה בסוף הדף - מחוץ לבלוקים
+# =======================
+
+st.markdown("---")
+st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
+st.markdown("📧 sergeym@polytex.co.il")
+st.markdown("📅 April 2025")
