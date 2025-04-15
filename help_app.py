@@ -35,7 +35,7 @@ Ideal for quarterly or yearly summaries, trend analysis, and pattern detection.
     if tool_visibility.get("🧯 Alerts Filtering"):
         st.markdown("""
 ### 🧯 Alerts Filtering  
-Drowning in system alerts? This tool helps you cut through the noise.
+Drowning in system alerts? This tool helps you cut through the noise!
 Upload your PM8 alerts file, choose which alerts you want to focus on, and get a clean, streamlined Excel report.
 📌 The output file includes a separate tab for each station from the PM8 site — showing only the alerts you selected for review.
 """)
