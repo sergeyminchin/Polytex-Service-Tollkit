@@ -50,7 +50,7 @@ This tool uses the “Fixes per Unit” (תיקונים למכשיר) report fro
 ---
 
 ### 📦 Service Calls & Spare Parts  
-This tool analyzes both the “Service Calls” (קריאות שירות) and “Spare Parts Used in Calls” (חלקים שדווחו בקריאות שירות) reports from Priority.  
+This tool analyzes Priority's “Service Calls” (קריאות שירות) and “Spare Parts Used in Calls” (חלקים שדווחו בקריאות שירות) reports.  
 It provides insights on visits by model, fault codes, and parts usage.  
 Want better system mapping? Use **System Mapper** first before running this tool.
 
@@ -58,13 +58,16 @@ Want better system mapping? Use **System Mapper** first before running this tool
 
 ### 📂 Service Distribution Transformer  
 Cleans up system model naming for easier summaries.  
-You’ll get a clear breakdown of system types (like DX00, R310, etc.) based on the product code — super useful for logistics and planning.
+Based on the product code, you’ll get a clear breakdown of system types (like DX00, R310, etc.)—super useful for logistics and planning.
+The "System Mapper" Tool is more advanced and is suggested to be used instead of this one.
 
 ---
 
 ### 📦 Spare Parts Usage  
 A dashboard focused entirely on spare part usage.  
 Filter by model, technician, or specific parts, and export everything as Excel reports for documentation or analysis.
+Upload “Spare Parts Used in Calls” (חלקים שדווחו בקריאות שירות) report.
+Want better system mapping? Use **System Mapper** first before running this tool.
 
 ---
 
