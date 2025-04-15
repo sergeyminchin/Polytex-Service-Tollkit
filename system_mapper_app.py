@@ -4,7 +4,9 @@ import pandas as pd
 import re
 from io import BytesIO
 
-def transform_row(makat: str):
+st.set_page_config(page_title="System Mapper", layout="centered")
+
+def transform_row(makat):
     makat = str(makat).upper()
     if makat in ["POL-R11I-00000A"]:
         return "R110", "R110 Return Unit"
@@ -26,34 +28,24 @@ def transform_row(makat: str):
         return makat, ""
 
 def run_app():
-    st.title("🧠 System Mapper")
-    uploaded_files = st.file_uploader("Upload Excel File(s)", type=["xlsx"], accept_multiple_files=True)
+    st.title("🧠 System Mapper Utility")
+    uploaded_files = st.file_uploader("Upload 1–3 Excel Files", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
         for file in uploaded_files:
             try:
                 df = pd.read_excel(file)
-                column_candidates = ["מק"ט", "מק"ט בטיפול", "מק'ט"]
+                makat_column = next((col for col in df.columns if any(key in col for key in ["מק"ט", "מק'", "מקט"])), None)
+                desc_column = next((col for col in df.columns if "תיאור" in col and "מוצר" in col), None)
 
-                matched_col = next((col for col in column_candidates if col in df.columns), None)
-
-                if not matched_col:
-                    st.warning(f"⚠️ No matching column found in: {file.name}")
+                if not makat_column:
+                    st.error(f"No valid 'makat' column in {file.name}. Skipping.")
                     continue
 
-                df[matched_col], df["תאור מוצר"] = zip(*df[matched_col].map(transform_row))
-
+                df[makat_column], df[desc_column] = zip(*df[makat_column].map(transform_row))
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, index=False, sheet_name="DataSheet")
-                output.seek(0)
-
-                st.success(f"✅ Processed file: {file.name}")
-                st.download_button(
-                    label=f"📥 Download {file.name}",
-                    data=output,
-                    file_name=f"{Path(file.name).stem}_mapped.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+                    df.to_excel(writer, sheet_name="DataSheet", index=False)
+                st.download_button(f"📥 Download: {file.name}", data=output.getvalue(), file_name=file.name, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             except Exception as e:
-                st.error(f"❌ Error processing {file.name}: {e}")
+                st.error(f"❌ Failed to process {file.name}: {e}")
