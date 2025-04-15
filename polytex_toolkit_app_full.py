@@ -44,8 +44,8 @@ if selected_app:
     elif app_file == "parts_dashboard":
         import parts_dashboard
         parts_dashboard.run_app()
-        
-     elif app_file == "system_mapper_app":
+
+    elif app_file == "system_mapper_app":
         import system_mapper_app
         system_mapper_app.run_app()
 
