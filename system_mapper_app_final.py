@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import re
 from io import BytesIO
-from PIL import Image
 
 def transform_row(makat: str):
     makat = str(makat).upper()
@@ -26,35 +25,36 @@ def transform_row(makat: str):
         return makat, ""
 
 def run_app():
-    st.set_page_config(page_title="System Mapper", layout="centered")
-
-    st.title("🔁 System Mapper Tool")
-    uploaded_files = st.file_uploader("Upload Excel Reports", type=["xlsx"], accept_multiple_files=True)
+    st.title("🧮 System Mapper")
+    uploaded_files = st.file_uploader("📤 Upload Excel Files", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
-            file_name = Path(uploaded_file.name).stem
             try:
                 df = pd.read_excel(uploaded_file)
-                column_candidates = ["מק"ט", "מק'ט", "מק"ט בטיפול", "מק"ט בטיפול"]
-                target_col = next((col for col in column_candidates if col in df.columns), None)
+                column_candidates = ["מק"ט", "מק"ט בטיפול", "מק'ט"]
+                match_col = next((col for col in column_candidates if col in df.columns), None)
 
-                if target_col is None:
-                    st.warning(f"No matching column ('מק"ט', 'מק'ט', 'מק"ט בטיפול', 'מק"ט בטיפול') found in: {file_name}")
+                if not match_col:
+                    st.warning(f"No matching column ('מק"ט', 'מק"ט בטיפול', or 'מק'ט') found in: {uploaded_file.name}")
                     continue
 
-                df[target_col], df["תאור מוצר"] = zip(*df[target_col].map(transform_row))
+                new_codes, new_descs = zip(*df[match_col].map(transform_row))
+                df[match_col] = new_codes
+                desc_col = "תאור מוצר בטיפול" if "תאור מוצר בטיפול" in df.columns else "תאור מוצר"
+                if desc_col in df.columns:
+                    df[desc_col] = new_descs
 
-                output = BytesIO()
-                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+                towrite = BytesIO()
+                with pd.ExcelWriter(towrite, engine="xlsxwriter") as writer:
                     df.to_excel(writer, index=False, sheet_name="DataSheet")
-                output.seek(0)
+                towrite.seek(0)
 
                 st.download_button(
-                    label=f"📥 Download Updated: {file_name}.xlsx",
-                    data=output,
-                    file_name=f"{file_name}_Mapped.xlsx",
+                    label=f"📥 Download {uploaded_file.name} (mapped)",
+                    data=towrite,
+                    file_name=uploaded_file.name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             except Exception as e:
-                st.error(f"❌ Failed to process {file_name}: {e}")
+                st.error(f"❌ Error processing {uploaded_file.name}: {e}")
