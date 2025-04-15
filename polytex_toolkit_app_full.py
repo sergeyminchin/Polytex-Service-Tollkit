@@ -36,8 +36,8 @@ if selected_app:
         import repeated_calls
         repeated_calls.run_app()
 
-    elif app_file == "distribution_transformer_app":
-        from distribution_transformer_app import run_transformer_app
+    elif app_file == "distribution_transformer_app_fixed":
+        from distribution_transformer_app_fixed import run_transformer_app
         run_transformer_app()
 
     elif app_file == "parts_dashboard":
