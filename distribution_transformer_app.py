@@ -28,6 +28,8 @@ def run_transformer_app():
             return "R310", "R310 Return Unit"
         elif re.search(r"(R11X|R110|R100)", makat) and not re.search(r"(PRO|P)", makat):
             return "R110", "R110 Return Unit"
+         elif makat in ["R210-1220-0300"]:
+            return "R210", "R210 Return Unit"    
         else:
             return makat, ""
 
