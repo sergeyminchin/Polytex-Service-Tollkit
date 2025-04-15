@@ -1,6 +1,5 @@
 
 import streamlit as st
-from email_util import send_excel_email
 from PIL import Image
 
 # Set branding
