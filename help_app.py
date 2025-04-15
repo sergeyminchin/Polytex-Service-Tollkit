@@ -4,7 +4,7 @@ def run_app():
     st.set_page_config(page_title="Help & User Guide", layout="centered")
     st.title("❓ Help & User Guide")
 
-    st.markdown(""" 
+   st.markdown(""" 
 Welcome to the **Polytex Service Toolkit** 👋  
 This guide provides clear explanations for each tool available in the system.
 
