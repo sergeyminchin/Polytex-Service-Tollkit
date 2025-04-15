@@ -20,7 +20,7 @@ def run_transformer_app():
             return "DX00 PRO", "DX00 PRO Distribution Cabinet"
         elif re.search(r"(D200|D300)", makat) and not re.search(r"(PRO|P)", makat):
             return "DX00", "DX00 Distribution Cabinet"
-        elif re.search(r"(D10|D12|D16|D20|D24|D40|)", makat):
+        elif re.search(r"(D10|D12|D16|D20|D24|D40)", makat):
             return "DXX", "DXX Distribution Cabinet"
         elif re.search(r"(310P|31XP)", makat):
             return "R310 PRO", "R310 PRO Return Unit"
