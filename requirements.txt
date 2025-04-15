@@ -4,5 +4,6 @@ plotly
 openpyxl
 Pillow
 XlsxWriter
+streamlit-sortables
 
 
