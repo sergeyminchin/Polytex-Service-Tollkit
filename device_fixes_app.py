@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 
 st.title("🔧 Device Fixes Analyzer")
-uploaded_file = st.file_uploader("Upload your Excel file (must include a 'DataSheet' tab)", type=["xlsx"])
+uploaded_file = st.file_uploader("Upload your Excel file (must include a 'DataSheet' tab, 'מק"ט' column)", type=["xlsx"])
 if uploaded_file:
     df = pd.read_excel(uploaded_file, sheet_name='DataSheet')
     df = df.sort_values(by=["מס' מכשיר", "תאריך קריאה"])
