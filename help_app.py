@@ -37,6 +37,7 @@ Ideal for quarterly or yearly summaries, trend analysis, and pattern detection.
 ### 🧯 Alerts Filtering  
 Drowning in system alerts? This tool helps you cut through the noise!
 Upload your PM8 alerts file, choose which alerts you want to focus on, and get a clean, streamlined Excel report.
+
 📌 The output file includes a separate tab for each station from the PM8 site — showing only the alerts you selected for review.
 """)
 
@@ -45,6 +46,7 @@ Upload your PM8 alerts file, choose which alerts you want to focus on, and get a
 ### 📦 Duplicates RFID Readings  
 Wondering if your RFID system is logging the same item more than once? This tool helps you find out.
 Upload the PM8 Transaction Report, filtered to show “Dispenses only” and excluding “Computerised balance” entries.
+
 📌 The output Excel highlights all duplicate readings, along with a clear summary — including counts and percentage of repeated reads.
 """)
 
@@ -65,14 +67,15 @@ This tool analyzes data from two Priority reports:
 🔹 חלקים שדווחו בקריאות שירות (Spare Parts Used in Calls)
 It gives you structured insights — like which parts are used most often and which units or models are more problematic.
 📊 The output can be used directly in the Universal Dashboard Tool for deeper exploration.
-💡 For better accuracy in system categorization, use the System Mapper Tool on your original Priority reports before running this tool.
+💡 For better system categorization accuracy, use the System Mapper Tool on your original Priority reports before running this tool.
 """)
 
     if tool_visibility.get("📂 Service Distribution Transformer"):
         st.markdown("""
 ### 📂 Service Distribution Transformer  
 Normalize model names (like DX00, R310).  
-Helps logistics by categorizing systems based on code.  
+Helps logistics by categorizing systems based on code. 
+
 ✅ Consider using **System Mapper** instead for better results.
 """)
 
@@ -81,6 +84,7 @@ Helps logistics by categorizing systems based on code.
 ### 📦 Spare Parts Usage  
 Dashboard for filtering spare part usage by technician, part, model.  
 Use Priority’s “Spare Parts Used in Calls” report.  
+
 ✅ Use **System Mapper** first for best accuracy.
 """)
 
