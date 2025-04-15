@@ -2,7 +2,7 @@
 import streamlit as st
 from PIL import Image
 
-# Set branding
+# Set branding - must be first!
 st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
 
 # Logo display
@@ -24,8 +24,8 @@ app_options = {
     "🔧 Fixes per Unit": "device_fixes_app",
     "📦 ServiceCalls_SpareParts": "app_final_built_clean",
     "📦 Spare Parts Usage": "parts_dashboard",
-    "🧠 System Mapper": "system_mapper_app",
-    "📂 Service Distribution Transformer": "distribution_transformer_app"
+    "📂 Service Distribution Transformer": "distribution_transformer_app",
+    "🧠 System Mapper": "system_mapper_app"
 }
 
 selected_app = st.selectbox("Select a Tool", list(app_options.keys()))
@@ -53,9 +53,6 @@ if selected_app:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
 
-# =======================
-# חתימה בסוף הדף - מחוץ לבלוקים
-# =======================
 st.markdown("---")
 st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
 st.markdown("📧 sergeym@polytex.co.il")
