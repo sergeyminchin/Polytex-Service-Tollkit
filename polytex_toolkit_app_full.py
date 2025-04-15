@@ -1,13 +1,14 @@
 import streamlit as st
 from PIL import Image
+from email_util import send_excel_email
 import json
 from pathlib import Path
+from streamlit_sortables import sort_items
 
-# Page config
 st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
 
 # ===============================
-# 📦 Available Tools (App Routing)
+# 📦 Tool Definitions
 # ===============================
 app_options = {
     "🔁 Repeated Calls Analyzer": "repeated_calls",
@@ -23,24 +24,31 @@ app_options = {
     "❓ Help & Guide": "help_app"
 }
 
-# ===============================
-# 🔐 Tool Visibility Config (Persisted)
-# ===============================
 CONFIG_FILE = Path("visibility_config.json")
 
-# Load visibility settings from file or set all to True
+# ===============================
+# 🔃 Load or Migrate Config
+# ===============================
 if CONFIG_FILE.exists():
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        tool_visibility = json.load(f)
+        raw = json.load(f)
+    config_data = {}
+    for i, (tool, val) in enumerate(raw.items()):
+        if isinstance(val, dict):
+            config_data[tool] = {
+                "visible": val.get("visible", True),
+                "order": val.get("order", i)
+            }
+        else:
+            config_data[tool] = {"visible": bool(val), "order": i}
 else:
-    tool_visibility = {tool: True for tool in app_options}
+    config_data = {tool: {"visible": True, "order": i} for i, tool in enumerate(app_options)}
 
-# Initialize session state with visibility
-if "tool_visibility" not in st.session_state:
-    st.session_state.tool_visibility = tool_visibility
+if "tool_config" not in st.session_state:
+    st.session_state.tool_config = config_data
 
 # ===============================
-# 🔐 Admin Login Panel
+# 🔐 Admin Login
 # ===============================
 if "admin" not in st.session_state:
     st.session_state.admin = False
@@ -51,23 +59,39 @@ with st.expander("🔑 Admin Login"):
         st.session_state.admin = True
         st.success("Admin mode enabled!")
 
-# Admin settings toggle panel
+# ===============================
+# 🛠️ Admin Panel: Drag & Visibility
+# ===============================
 if st.session_state.admin:
-    st.subheader("🛠️ Toggle Tool Visibility")
+    st.subheader("🛠️ Tool Settings: Drag to Reorder & Toggle Visibility")
+
+    # Sort based on current order
+    current_tools = sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
+    tool_labels = [tool for tool, _ in current_tools]
+
+    # Drag to sort
+    sorted_labels = sort_items(tool_labels, direction="vertical")
+
+    # Update order in session state
+    for i, tool in enumerate(sorted_labels):
+        st.session_state.tool_config[tool]["order"] = i
+
+    # Toggle visibility
     changed = False
-    for key in st.session_state.tool_visibility:
-        new_val = st.checkbox(key, value=st.session_state.tool_visibility[key])
-        if new_val != st.session_state.tool_visibility[key]:
-            st.session_state.tool_visibility[key] = new_val
+    for tool in sorted_labels:
+        current_val = st.session_state.tool_config[tool]["visible"]
+        new_val = st.checkbox(tool, value=current_val, key=f"vis_{tool}")
+        if new_val != current_val:
+            st.session_state.tool_config[tool]["visible"] = new_val
             changed = True
 
-    if changed:
+    if st.button("💾 Save Tool Configuration"):
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(st.session_state.tool_visibility, f, ensure_ascii=False, indent=2)
-        st.success("Visibility settings saved!")
+            json.dump(st.session_state.tool_config, f, ensure_ascii=False, indent=2)
+        st.success("✅ Settings saved!")
 
 # ===============================
-# 🔧 Logo and Title
+# 🔧 Logo & Title
 # ===============================
 try:
     logo = Image.open("logo.png")
@@ -78,19 +102,23 @@ except:
 st.title("🛠️ Polytex Service Toolkit")
 
 # ===============================
-# 🎛️ Filter Visible Tools
+# 📋 Filter and Sort Tools for Menu
 # ===============================
-visible_apps = {k: v for k, v in app_options.items() if st.session_state.tool_visibility.get(k, False)}
+visible_tools = {
+    tool: app_options[tool]
+    for tool, settings in sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
+    if settings["visible"]
+}
 
-if not visible_apps:
-    st.warning("No tools available. Please log in as admin to enable tools.")
+if not visible_tools:
+    st.warning("No tools enabled. Enable at least one in Admin panel.")
     st.stop()
 
-selected_app = st.selectbox("Select a Tool", list(visible_apps.keys()))
-app_file = visible_apps[selected_app]
+selected_tool = st.selectbox("Select a Tool", list(visible_tools.keys()))
+app_file = visible_tools[selected_tool]
 
 # ===============================
-# ▶️ Load Selected App
+# ▶️ Tool Loader
 # ===============================
 if app_file == "repeated_calls":
     import repeated_calls
