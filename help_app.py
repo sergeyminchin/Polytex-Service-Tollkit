@@ -75,9 +75,9 @@ Want better system mapping? Use **System Mapper** first before running this tool
 Different reports use different product codes? No problem.  
 This tool “translates” product codes into standard system names like DX00 or R310, based on your rules.  
 Upload any or all of the following reports from Priority:
-- 🔹 קריאות שירות (Service Calls)  
-- 🔹 חלקים שדווחו בקריאות שירות (Spare Parts Used in Calls)  
-- 🔹 תיקונים למכשיר (Fixes per Unit)  
+-  קריאות שירות (Service Calls)  
+-  חלקים שדווחו בקריאות שירות (Spare Parts Used in Calls)  
+-  תיקונים למכשיר (Fixes per Unit)  
 You’ll get back files with updated system names — ready for further analysis.
 
 ---
