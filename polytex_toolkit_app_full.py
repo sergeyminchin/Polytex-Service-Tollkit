@@ -46,8 +46,8 @@ if selected_app:
         parts_dashboard.run_app()
 
     elif app_file == "system_mapper_app":
-        import system_mapper_app
-        system_mapper_app.run_app()
+    import system_mapper_app
+    system_mapper_app.run_app()
 
     else:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
