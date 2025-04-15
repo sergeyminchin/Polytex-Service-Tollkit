@@ -1,5 +1,6 @@
 
 import streamlit as st
+from email_util import send_excel_email
 from PIL import Image
 
 # Set branding
@@ -47,8 +48,8 @@ if selected_app:
         import system_mapper_app_final as system_mapper_app
         system_mapper_app.run_app()
     elif app_file == "help_app":
-    import help_app
-    help_app.run_app()
+        import help_app
+        help_app.run_app()
     else:
         with open(f"{app_file}.py", "r", encoding="utf-8") as f:
             exec(f.read(), globals())
