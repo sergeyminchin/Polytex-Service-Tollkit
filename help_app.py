@@ -53,7 +53,7 @@ Upload the PM8 Transaction Report, filtered to show “Dispenses only” and exc
 ### 🔧 Fixes per Unit  
 Analyze how often each device was repaired — great for identifying chronic issues or understanding lifecycle performance.  
 This tool uses the “Fixes per Unit” (תיקונים למכשיר) report from Priority.
-Use **System Mapper** first for best accuracy.
+✅ Use **System Mapper** first for best accuracy.
 """)
 
     if tool_visibility.get("📦 ServiceCalls_SpareParts"):
