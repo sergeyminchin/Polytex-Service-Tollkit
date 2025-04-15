@@ -55,14 +55,14 @@ if service_file and parts_file:
             tech_df = service_df[service_df['סוג קריאה'] == 'ביקור טכני']
             results["ביקורים טכניים לפי דגם"] = tech_df['מק"ט'].value_counts().reset_index().rename(columns={'index': 'דגם', 'דגם': 'כמות ביקורים'})
 
-            if 'דגם' in service_df.columns and 'תאור תקלה' in service_df.columns:
+            if 'מק"ט' in service_df.columns and 'תאור תקלה' in service_df.columns:
                 issues_by_model = (
                     service_df[['מק"ט', 'תאור תקלה']]
-                    .dropna(subset=['דגם', 'תאור תקלה'])
-                    .groupby(['דגם', 'תאור תקלה'])
+                    .dropna(subset=['מק"ט', 'תאור תקלה'])
+                    .groupby(['מק"ט', 'תאור תקלה'])
                     .size()
                     .reset_index(name='כמות')
-                    .sort_values(by=['דגם', 'כמות'], ascending=[True, False])
+                    .sort_values(by=['מק"ט', 'כמות'], ascending=[True, False])
                 )
                 results["תקלות לפי דגם"] = issues_by_model
             else:
