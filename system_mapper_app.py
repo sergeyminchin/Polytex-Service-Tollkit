@@ -1,12 +1,10 @@
-
 import streamlit as st
 import pandas as pd
 import re
 from io import BytesIO
+from PIL import Image
 
-st.set_page_config(page_title="System Mapper", layout="centered")
-
-def transform_row(makat):
+def transform_row(makat: str):
     makat = str(makat).upper()
     if makat in ["POL-R11I-00000A"]:
         return "R110", "R110 Return Unit"
@@ -28,24 +26,30 @@ def transform_row(makat):
         return makat, ""
 
 def run_app():
-    st.title("🧠 System Mapper Utility")
-    uploaded_files = st.file_uploader("Upload 1–3 Excel Files", type=["xlsx"], accept_multiple_files=True)
+    st.title("🧠 System Mapper")
+    uploaded_files = st.file_uploader("Upload Excel Reports", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
         for file in uploaded_files:
             try:
                 df = pd.read_excel(file)
-                makat_column = next((col for col in df.columns if any(key in col for key in ["מק"ט", "מק'", "מקט"])), None)
-                desc_column = next((col for col in df.columns if "תיאור" in col and "מוצר" in col), None)
-
-                if not makat_column:
-                    st.error(f"No valid 'makat' column in {file.name}. Skipping.")
+                column_candidates = ["מק"ט", "מק"ט בטיפול", "מק'ט"]
+                found_col = next((col for col in column_candidates if col in df.columns), None)
+                if not found_col:
+                    st.error(f"No matching column ('מק"ט', 'מק"ט בטיפול', or 'מק'ט') found in: {file.name}")
                     continue
 
-                df[makat_column], df[desc_column] = zip(*df[makat_column].map(transform_row))
+                df[found_col], df["תאור מוצר"] = zip(*df[found_col].map(transform_row))
+
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, sheet_name="DataSheet", index=False)
-                st.download_button(f"📥 Download: {file.name}", data=output.getvalue(), file_name=file.name, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    df.to_excel(writer, index=False, sheet_name="DataSheet")
+                output.seek(0)
+
+                st.success(f"✅ Processed: {file.name}")
+                st.download_button("📥 Download Updated File",
+                                   data=output,
+                                   file_name=f"updated_{file.name}",
+                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             except Exception as e:
                 st.error(f"❌ Failed to process {file.name}: {e}")
