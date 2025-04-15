@@ -1,7 +1,9 @@
 import streamlit as st
 
+st.set_page_config(page_title="Help & User Guide", layout="centered")
+
 def run_app():
-    st.set_page_config(page_title="Help & User Guide", layout="centered")
+    
     st.title("❓ Help & User Guide")
 
     st.markdown(""" 
