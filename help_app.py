@@ -1,7 +1,7 @@
 import streamlit as st
 
 def run_app():
-st.title("❓ Help & User Guide")
+    st.title("❓ Help & User Guide")
 
 st.markdown(""" 
 Welcome to the **Polytex Service Toolkit** 👋  
