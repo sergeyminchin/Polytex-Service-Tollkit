@@ -53,11 +53,11 @@ if service_file and parts_file:
             results["כמות קריאות"] = pd.DataFrame({'סה"כ קריאות': [service_df.shape[0]]})
             results["התפלגות סוגי קריאה"] = service_df['סוג קריאה'].value_counts().reset_index().rename(columns={'index': 'סוג קריאה', 'סוג קריאה': 'כמות'})
             tech_df = service_df[service_df['סוג קריאה'] == 'ביקור טכני']
-            results["ביקורים טכניים לפי דגם"] = tech_df['דגם'].value_counts().reset_index().rename(columns={'index': 'דגם', 'דגם': 'כמות ביקורים'})
+            results["ביקורים טכניים לפי דגם"] = tech_df['מק"ט'].value_counts().reset_index().rename(columns={'index': 'דגם', 'דגם': 'כמות ביקורים'})
 
             if 'דגם' in service_df.columns and 'תאור תקלה' in service_df.columns:
                 issues_by_model = (
-                    service_df[['דגם', 'תאור תקלה']]
+                    service_df[['מק"ט', 'תאור תקלה']]
                     .dropna(subset=['דגם', 'תאור תקלה'])
                     .groupby(['דגם', 'תאור תקלה'])
                     .size()
