@@ -1,8 +1,8 @@
+
 import streamlit as st
 import pandas as pd
 import re
 from io import BytesIO
-from PIL import Image
 
 def transform_row(makat: str):
     makat = str(makat).upper()
@@ -26,30 +26,35 @@ def transform_row(makat: str):
         return makat, ""
 
 def run_app():
-    st.title("🧠 System Mapper")
-    uploaded_files = st.file_uploader("Upload Excel Reports", type=["xlsx"], accept_multiple_files=True)
+    st.set_page_config(page_title="System Mapper", layout="centered")
+    st.title("🔧 System Mapper Tool")
+
+    uploaded_files = st.file_uploader("Upload Excel Files", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
-        for file in uploaded_files:
+        for uploaded_file in uploaded_files:
             try:
-                df = pd.read_excel(file)
+                df = pd.read_excel(uploaded_file, engine='openpyxl')
                 column_candidates = ["מק"ט", "מק"ט בטיפול", "מק'ט"]
-                found_col = next((col for col in column_candidates if col in df.columns), None)
-                if not found_col:
-                    st.error(f"No matching column ('מק"ט', 'מק"ט בטיפול', or 'מק'ט') found in: {file.name}")
+
+                for col in column_candidates:
+                    if col in df.columns:
+                        df[col], df["תאור מוצר"] = zip(*df[col].map(transform_row))
+                        break
+                else:
+                    st.warning(f"No matching column ('מק"ט', 'מק"ט בטיפול', or 'מק'ט') found in: {uploaded_file.name}")
                     continue
 
-                df[found_col], df["תאור מוצר"] = zip(*df[found_col].map(transform_row))
-
                 output = BytesIO()
-                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, index=False, sheet_name="DataSheet")
+                with pd.ExcelWriter(output, engine="openpyxl") as writer:
+                    df.to_excel(writer, sheet_name="DataSheet", index=False)
                 output.seek(0)
 
-                st.success(f"✅ Processed: {file.name}")
-                st.download_button("📥 Download Updated File",
-                                   data=output,
-                                   file_name=f"updated_{file.name}",
-                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                st.download_button(
+                    label=f"📥 Download Processed File: {uploaded_file.name}",
+                    data=output,
+                    file_name=uploaded_file.name,
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
             except Exception as e:
-                st.error(f"❌ Failed to process {file.name}: {e}")
+                st.error(f"❌ Failed to process {uploaded_file.name}: {e}")
