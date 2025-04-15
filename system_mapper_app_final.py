@@ -34,11 +34,11 @@ def run_app():
         for uploaded_file in uploaded_files:
             try:
                 df = pd.read_excel(uploaded_file)
-                col_name = next((col for col in df.columns if col in ["מק"ט", "מק"ט בטיפול", "מק'ט"]), None)
+                col_name = next((col for col in df.columns if col in ["מק\"ט", "מק\"ט בטיפול", "מק'ט"]), None)
                 desc_col = next((col for col in df.columns if "תאור" in col and "מוצר" in col), None)
 
                 if not col_name or not desc_col:
-                    st.warning(f"⚠️ Skipped {uploaded_file.name} (No valid מק"ט column found).")
+                    st.warning(f"⚠️ Skipped {uploaded_file.name} (No valid מק'ט column found).")
                     continue
 
                 mapped = df[col_name].apply(lambda x: transform_row(x))
