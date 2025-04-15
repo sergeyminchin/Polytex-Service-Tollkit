@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-from email_util import send_excel_email
 import json
 from pathlib import Path
 
