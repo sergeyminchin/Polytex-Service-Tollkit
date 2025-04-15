@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import re
@@ -20,40 +21,43 @@ def transform_row(makat: str):
     elif re.search(r"(R31X|R310|R300)", makat) and not re.search(r"(PRO|P)", makat):
         return "R310", "R310 Return Unit"
     elif re.search(r"(R11X|R110|R100)", makat) and not re.search(r"(PRO|P)", makat):
-        return "R110", "R110 Return Unit"
+        return "R110", "R110 Return Unit"   
     else:
         return makat, ""
 
-def run_system_mapper():
-    st.title("🧭 System Identifier & Mapper")
+def run_app():
+    st.set_page_config(page_title="System Mapper", layout="centered")
+    st.title("🔄 System Model Normalizer")
 
-    uploaded_files = st.file_uploader("Upload Excel files (one or more)", type=["xlsx"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload Excel files", type=["xlsx"], accept_multiple_files=True)
     if uploaded_files:
-        for file in uploaded_files:
+        for uploaded_file in uploaded_files:
             try:
-                df = pd.read_excel(file)
-                col_candidates = ["מק\"ט", "מקט בטיפול", "מק'ט"]
+                df = pd.read_excel(uploaded_file)
+                column_candidates = ["מק"ט", "מק"ט בטיפול", "מק'ט"]
 
-                for col in col_candidates:
-                    if col in df.columns:
-                        df[col], desc = zip(*df[col].map(transform_row))
-                        df["תאור מוצר"] = desc
-                        break
+                matched_col = next((col for col in column_candidates if col in df.columns), None)
+
+                if matched_col:
+                    new_model, new_desc = zip(*df[matched_col].map(transform_row))
+                    df[matched_col] = new_model
+                    if "תאור מוצר" in df.columns:
+                        df["תאור מוצר"] = new_desc
+                    elif "תאור מוצר בטיפול" in df.columns:
+                        df["תאור מוצר בטיפול"] = new_desc
+
+                    output = BytesIO()
+                    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+                        df.to_excel(writer, index=False, sheet_name="DataSheet")
+                    output.seek(0)
+
+                    st.download_button(
+                        label=f"📥 Download: {uploaded_file.name}",
+                        data=output,
+                        file_name=f"updated_{uploaded_file.name}",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
                 else:
-                    st.warning(f"⚠️ No matching 'makat' column found in: {file.name}")
-                    continue
-
-                output = BytesIO()
-                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, index=False, sheet_name="DataSheet")
-                output.seek(0)
-
-                st.success(f"✅ Processed: {file.name}")
-                st.download_button(
-                    label=f"📥 Download {file.name}",
-                    data=output,
-                    file_name=file.name,
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+                    st.error(f"No matching column found in: {uploaded_file.name}")
             except Exception as e:
-                st.error(f"❌ Failed to process {file.name}: {e}")
+                st.error(f"❌ Failed to process {uploaded_file.name}: {e}")
