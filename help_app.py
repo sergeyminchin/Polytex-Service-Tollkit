@@ -36,7 +36,14 @@ def run_app():
     Full dashboard of spare part usage with filters and visualizations.
 
     ### 🧩 System Mapper
-    Automatically standardize device model codes and descriptions across multiple reports.
+    Tired of inconsistent product codes across different reports? This tool standardizes them for you.
+    It automatically translates codes into clear system names (like DX00 or R310) using predefined rules — so all your reports speak the same language.
+    📂 Just upload one or more of the following Priority reports:
+    🔹 קריאות שירות (Service Calls)
+    🔹 חלקים שדווחו בקריאות שירות (Spare Parts Used in Calls)
+    🔹 תיקונים למכשיר (Fixes per Unit)
+
+    ✅ The tool returns cleaned-up files with unified system names — ready for analysis or dashboards.
 
     ---
     For additional support, contact: **sergeym@polytex.co.il**
