@@ -3,84 +3,87 @@ import streamlit as st
 def run_app():
     st.title("❓ Help & User Guide")
 
-    st.markdown(""" 
-Welcome to the **Polytex Service Toolkit** 👋  
-This guide provides clear explanations for each tool available in the system.
+    tool_visibility = st.session_state.get("tool_visibility", {})
 
----
+    st.markdown("Welcome to the **Polytex Service Toolkit** 👋  \nThis guide provides clear explanations for each tool available in the system.\n---")
 
+    if tool_visibility.get("🔁 Repeated Calls Analyzer"):
+        st.markdown("""
 ### 🔁 Repeated Calls Analyzer  
 Easily spot when the same machine needed service again shortly after a previous visit — or when the same technician made repeated visits, indicating the issue wasn’t fully resolved.  
-Just upload your Excel file with the service calls report from Priority (קריאות שירות), and you’ll get a breakdown per technician, with repeat visits clearly highlighted. A summary will also show how often repeated issues occur.
+Upload your Excel file with the service calls report from Priority (קריאות שירות), and get a breakdown per technician with repeat visits highlighted.
+""")
 
----
-
+    if tool_visibility.get("📊 Dashboard Q1 2024 VS Q1 2025"):
+        st.markdown("""
 ### 📊 Dashboard Q1 2024 vs Q1 2025  
-This dashboard helps you compare two quarters side-by-side — for example, to see if faults have gone up or which models are causing more trouble over time.  
-⚠️ Note: This version is fixed to Q1 of 2024 and 2025 only.  
-Use the **Universal Dashboard** tool for flexible time periods.
+Compare two quarters side-by-side to see if faults have gone up or which models are more problematic.  
+⚠️ Fixed to Q1 of 2024 and 2025. Use **Universal Dashboard** for flexible dates.
+""")
 
----
-
+    if tool_visibility.get("📈 Universal Dashboard"):
+        st.markdown("""
 ### 📈 Universal Dashboard  
-One report — tons of insights.  
-With this tool, you can filter and explore your service data however you like: by technician, model, fault, spare parts, and more.  
-Upload two Excel files (output of the ServiceCalls_SpareParts tool), label them (e.g., “Q1 2024”) and start comparing.
+Explore your service data: by technician, model, fault, spare parts, and more.  
+Upload two Excel files (output of the ServiceCalls_SpareParts tool), label them (e.g., “Q1 2024”) and compare.
+""")
 
----
-
+    if tool_visibility.get("🧯 Alerts Filtering"):
+        st.markdown("""
 ### 🧯 Alerts Filtering  
-Got a ton of system alerts? This tool helps you filter out the noise.  
-Upload your alert log from PM8 and get a cleaner view of what actually needs attention.  
-Just choose the alert types to focus on, and the tool will export an Excel file with a separate tab for each PM8 station.
+Filter out noise from technical alerts.  
+Upload your alert log from PM8 and generate Excel exports per PM8 station.
+""")
 
----
-
+    if tool_visibility.get("📦 Duplicates RFID Readings"):
+        st.markdown("""
 ### 📦 Duplicates RFID Readings  
-Helps you spot if your RFID system is logging the same item multiple times.  
-Upload the transaction report from PM8 (filtered on *Dispenses only*, without *Computerised balance*).  
-The tool outputs all duplicate reads and includes a percentage summary.
+Detect duplicated RFID events in PM8 logs.  
+Use *Dispenses only* reports, excluding *Computerised balance*.
+""")
 
----
-
+    if tool_visibility.get("🔧 Fixes per Unit"):
+        st.markdown("""
 ### 🔧 Fixes per Unit  
-Analyze how many times each device was repaired — great for identifying chronic issues or understanding lifecycle performance.  
-This tool uses the “Fixes per Unit” (תיקונים למכשיר) report from Priority.
+Analyze device repair frequency — useful for lifecycle evaluation or chronic failure tracking.
+""")
 
----
-
+    if tool_visibility.get("📦 ServiceCalls_SpareParts"):
+        st.markdown("""
 ### 📦 Service Calls & Spare Parts  
-This tool analyzes Priority's “Service Calls” (קריאות שירות) and “Spare Parts Used in Calls” (חלקים שדווחו בקריאות שירות) reports.  
-It provides insights on visits by model, fault codes, and parts usage.  
-Want better system mapping? Use **System Mapper** first before running this tool.
+Analyze “Service Calls” and “Spare Parts Used in Calls” from Priority.  
+See visits by model, fault code, and parts.  
+✅ Use **System Mapper** first for cleaner mapping.
+""")
 
----
-
+    if tool_visibility.get("📂 Service Distribution Transformer"):
+        st.markdown("""
 ### 📂 Service Distribution Transformer  
-Cleans up system model naming for easier summaries.  
-Based on the product code, you’ll get a clear breakdown of system types (like DX00, R310, etc.)—super useful for logistics and planning.
-The "System Mapper" Tool is more advanced and is suggested to be used instead of this one.
+Normalize model names (like DX00, R310).  
+Helps logistics by categorizing systems based on code.  
+✅ Consider using **System Mapper** instead for better results.
+""")
 
----
-
+    if tool_visibility.get("📦 Spare Parts Usage"):
+        st.markdown("""
 ### 📦 Spare Parts Usage  
-A dashboard focused entirely on spare part usage.  
-Filter by model, technician, or specific parts, and export everything as Excel reports for documentation or analysis.
-Upload “Spare Parts Used in Calls” (חלקים שדווחו בקריאות שירות) report.
-Want better system mapping? Use **System Mapper** first before running this tool.
+Dashboard for filtering spare part usage by technician, part, model.  
+Use Priority’s “Spare Parts Used in Calls” report.  
+✅ Use **System Mapper** first for best accuracy.
+""")
 
----
-
+    if tool_visibility.get("🧠 System Mapper"):
+        st.markdown("""
 ### 🧠 System Mapper  
-Different reports use different product codes? No problem.  
-This tool “translates” product codes into standard system names like DX00 or R310, based on your rules.  
-Upload any or all of the following reports from Priority:
--  קריאות שירות (Service Calls)  
--  חלקים שדווחו בקריאות שירות (Spare Parts Used in Calls)  
--  תיקונים למכשיר (Fixes per Unit)  
-You’ll get back files with updated system names — ready for further analysis.
+Standardize product codes to names like DX00 / R310.  
+Upload:
+- קריאות שירות (Service Calls)  
+- חלקים שדווחו בקריאות שירות (Parts used)  
+- תיקונים למכשיר (Fixes per Unit)  
+Get updated, normalized reports ready for further analysis.
+""")
 
+    st.markdown("""
 ---
-
 📧 For questions or support, contact: **sergeym@polytex.co.il**
 """)
