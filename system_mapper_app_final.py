@@ -34,6 +34,8 @@ def run_app():
         for uploaded_file in uploaded_files:
             try:
                 df = pd.read_excel(uploaded_file)
+                st.write("📋 עמודות שנמצאו בקובץ:", df.columns.tolist())
+
 
                 # Detect 'מק"ט' column using regex
                 col_name = next(
