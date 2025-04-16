@@ -40,11 +40,12 @@ def run_app():
 
                 # ✅ Match מק"ט variations
                 col_name = next(
-                    (col for col in df.columns if col.strip() in [
-                        "מק\"ט", "מק'ט", "מק״ט", "מקט",
-                        "מק\"ט בטיפול", "מק'ט בטיפול", "מק"ט בטיפול"
-                    ] or re.search(r"מ[\"׳']?ק[\"׳']?ט.*", col)), None
-                )
+    (col for col in df.columns if col.strip() in [
+        "מק\"ט", "מק'ט", "מק״ט", "מקט",
+        "מק\"ט בטיפול", "מק'ט בטיפול", "מק"ט בטיפול"
+    ] or re.search(r"מ[\"׳']?ק[\"׳']?ט.*", col)), None
+)
+
 
                 # ✅ Match תיאור מוצר variations
                 desc_col = next(
