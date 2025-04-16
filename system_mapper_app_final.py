@@ -34,26 +34,34 @@ def run_app():
         for uploaded_file in uploaded_files:
             try:
                 df = pd.read_excel(uploaded_file)
+
+                # 🧪 Show columns for debug
                 st.write("📋 עמודות שנמצאו בקובץ:", df.columns.tolist())
 
-
-                # Detect 'מק"ט' column using regex
+                # ✅ Match מק"ט variations
                 col_name = next(
-                    (col for col in df.columns if re.search(r"מ[\"׳']?ק[\"׳']?ט", col)), None
+                    (col for col in df.columns if col.strip() in [
+                        "מק\"ט", "מק'ט", "מק״ט", "מקט",
+                        "מק\"ט בטיפול", "מק'ט בטיפול", "מק"ט בטיפול"
+                    ] or re.search(r"מ[\"׳']?ק[\"׳']?ט.*", col)), None
                 )
 
-                # Detect description column
+                # ✅ Match תיאור מוצר variations
                 desc_col = next(
-                    (col for col in df.columns if re.search(r"תיאור.*מוצר", col)), None
+                    (col for col in df.columns if col.strip() in [
+                        "תאור מוצר", "תיאור מוצר", "תיאור מוצר בטיפול", "תאור מוצר בטיפול"
+                    ] or re.search(r"ת[אֵ]ו?ר.*מוצר", col)), None
                 )
 
                 if not col_name or not desc_col:
                     st.warning(f"⚠️ Skipped {uploaded_file.name} (No valid מק\"ט or תיאור מוצר column found).")
                     continue
 
+                # ✅ Map values
                 mapped = df[col_name].apply(lambda x: transform_row(x))
                 df[col_name], df[desc_col] = zip(*mapped)
 
+                # ✅ Export back
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, sheet_name="DataSheet", index=False)
@@ -65,5 +73,6 @@ def run_app():
                     file_name=uploaded_file.name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
             except Exception as e:
                 st.error(f"❌ Failed to process {uploaded_file.name}: {e}")
