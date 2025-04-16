@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import re
 from io import BytesIO
-from PIL import Image
 
 def transform_row(makat: str):
     makat = str(makat).upper()
@@ -28,13 +27,13 @@ def transform_row(makat: str):
 def run_app():
     st.title("🧩 System Mapper")
 
-    uploaded_files = st.file_uploader("📤 Upload up to 3 Excel files", type=["xlsx"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("📤 Upload Excel Files", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
             try:
                 df = pd.read_excel(uploaded_file)
-                st.write("📋 עמודות שנמצאו בקובץ:", df.columns.tolist())
+                st.write("📋 Columns:", df.columns.tolist())
 
                 col_name = next(
                     (col for col in df.columns if col.strip() in [
@@ -53,7 +52,7 @@ def run_app():
                     st.warning(f"⚠️ Skipped {uploaded_file.name} (No valid מק\"ט or תיאור מוצר column found).")
                     continue
 
-                mapped = df[col_name].apply(lambda x: transform_row(x))
+                mapped = df[col_name].apply(transform_row)
                 df[col_name], df[desc_col] = zip(*mapped)
 
                 output = BytesIO()
@@ -62,11 +61,10 @@ def run_app():
                 output.seek(0)
 
                 st.download_button(
-                    label=f"📥 Download: {uploaded_file.name}",
+                    label=f"📥 Download {uploaded_file.name}",
                     data=output,
                     file_name=uploaded_file.name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-
             except Exception as e:
-                st.error(f"❌ Failed to process {uploaded_file.name}: {e}")
+                st.error(f"❌ Error processing {uploaded_file.name}: {e}")
