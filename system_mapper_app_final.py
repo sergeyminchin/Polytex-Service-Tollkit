@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd
 import re
 from io import BytesIO
+from PIL import Image
+import unicodedata
+
+def normalize_col(col):
+    return unicodedata.normalize("NFKD", str(col)).replace("”", "\"").replace("’", "'").strip()
 
 def transform_row(makat: str):
     makat = str(makat).upper()
@@ -27,33 +32,29 @@ def transform_row(makat: str):
 def run_app():
     st.title("🧩 System Mapper")
 
-    uploaded_files = st.file_uploader("📤 Upload Excel Files", type=["xlsx"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("📤 Upload up to 3 Excel files", type=["xlsx"], accept_multiple_files=True)
 
     if uploaded_files:
         for uploaded_file in uploaded_files:
             try:
                 df = pd.read_excel(uploaded_file)
-                st.write("📋 Columns:", df.columns.tolist())
+                normalized_columns = {normalize_col(col): col for col in df.columns}
 
-                col_name = next(
-                    (col for col in df.columns if col.strip() in [
-                        "מק\"ט", "מק'ט", "מק״ט", "מקט",
-                        "מק\"ט בטיפול", "מק'ט בטיפול", "מק"ט בטיפול"
-                    ] or re.search(r"מ[\"׳']?ק[\"׳']?ט.*", col)), None
-                )
+                makat_candidates = [
+                    "מק\"ט", "מק'ט", "מקט", "מק\"ט בטיפול", "מק'ט בטיפול", "מקט בטיפול"
+                ]
+                desc_candidates = [
+                    "תאור מוצר", "תיאור מוצר", "תיאור מוצר בטיפול", "תאור מוצר בטיפול"
+                ]
 
-                desc_col = next(
-                    (col for col in df.columns if col.strip() in [
-                        "תאור מוצר", "תיאור מוצר", "תיאור מוצר בטיפול", "תאור מוצר בטיפול"
-                    ] or re.search(r"ת[אֵו]?ר.*מוצר", col)), None
-                )
+                col_name = next((normalized_columns[c] for c in makat_candidates if c in normalized_columns), None)
+                desc_col = next((normalized_columns[c] for c in desc_candidates if c in normalized_columns), None)
 
                 if not col_name or not desc_col:
                     st.warning(f"⚠️ Skipped {uploaded_file.name} (No valid מק\"ט or תיאור מוצר column found).")
                     continue
 
-                mapped = df[col_name].apply(transform_row)
-                df[col_name], df[desc_col] = zip(*mapped)
+                df[[col_name, desc_col]] = df[col_name].apply(lambda x: transform_row(x)).apply(pd.Series)
 
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
@@ -61,10 +62,10 @@ def run_app():
                 output.seek(0)
 
                 st.download_button(
-                    label=f"📥 Download {uploaded_file.name}",
+                    label=f"📥 Download: {uploaded_file.name}",
                     data=output,
                     file_name=uploaded_file.name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             except Exception as e:
-                st.error(f"❌ Error processing {uploaded_file.name}: {e}")
+                st.error(f"❌ Failed to process {uploaded_file.name}: {e}")
