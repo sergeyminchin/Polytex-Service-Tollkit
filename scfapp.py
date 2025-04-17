@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import io
@@ -60,24 +61,33 @@ def run_app():
                 st.session_state.search_triggered = True
 
             if st.session_state.search_triggered:
+                filtered = pd.DataFrame()
                 if search_by == "מספר קריאה" and st.session_state.query:
-                    filtered = merged[merged["מספר קריאה"].astype(str).str.contains(st.session_state.query)]
+                    merged["מספר קריאה"] = (
+                        merged["מספר קריאה"]
+                        .astype(str)
+                        .str.strip()
+                        .str.replace(".0", "", regex=False)
+                    )
+                    query_clean = st.session_state.query.strip().replace(".0", "")
+                    filtered = merged[merged["מספר קריאה"] == query_clean]
+
                 elif search_by == "תאור תקלה" and st.session_state.query:
                     filtered = merged[merged["תאור תקלה"].astype(str).str.contains(st.session_state.query, case=False, na=False)]
+
                 elif search_by == "תאור קוד פעולה" and st.session_state.query:
                     filtered = merged[merged["תאור קוד פעולה"].astype(str).str.contains(st.session_state.query, case=False, na=False)]
+
                 elif search_by == "תאור תקלה וגם תאור קוד פעולה" and (st.session_state.query_fault and st.session_state.query_action):
                     filtered = merged[
                         merged["תאור תקלה"].astype(str).str.contains(st.session_state.query_fault, case=False, na=False) &
                         merged["תאור קוד פעולה"].astype(str).str.contains(st.session_state.query_action, case=False, na=False)
                     ]
-                else:
-                    filtered = pd.DataFrame()
 
                 if not filtered.empty:
                     display_cols = [
                         "מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה",
-                        "מק\"ט - חלק", "תאור מוצר - חלק", "כמות בפועל"
+                        "מק"ט - חלק", "תאור מוצר - חלק", "כמות בפועל"
                     ]
                     existing_cols = [col for col in display_cols if col in filtered.columns]
                     filtered_result = filtered[existing_cols].drop_duplicates()
