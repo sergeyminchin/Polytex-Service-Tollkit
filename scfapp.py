@@ -61,7 +61,17 @@ def run_app():
 
             if st.session_state.search_triggered:
                 if search_by == "מספר קריאה" and st.session_state.query:
-                    filtered = merged[merged["מספר קריאה"].astype(str).str.contains(st.session_state.query)]
+
+                # Normalize call number column
+                merged["מספר קריאה"] = (
+                    merged["מספר קריאה"]
+                    .astype(str)
+                    .str.strip()
+                    .str.replace(".0", "", regex=False)
+                )
+                query_clean = st.session_state.query.strip()
+                filtered = merged[merged["מספר קריאה"].str.contains(query_clean)]
+
                 elif search_by == "תאור תקלה" and st.session_state.query:
                     filtered = merged[merged["תאור תקלה"].astype(str).str.contains(st.session_state.query, case=False, na=False)]
                 elif search_by == "תאור קוד פעולה" and st.session_state.query:
