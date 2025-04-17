@@ -104,5 +104,20 @@ Upload:
 Get updated, normalized reports ready for further analysis.
 """)
 
+        elif tool == "🔎 Service Call Finder":
+            st.markdown("""
+### 🔎 Service Call Finder  
+Find all the details related to a specific service call — fast.
+Search by:
+- מספר קריאה (Call Number)
+- תאור תקלה (Fault Description)
+- תאור קוד פעולה (Action Description)
+- Or both תאור תקלה AND תאור קוד פעולה combined.
+
+📂 Upload both the קריאות שירות (Service Calls) and the חלקים שדווחו בקריאות (Parts Used) Excel reports.
+📥 Results include model, fault, action, spare part info, and allow exporting to Excel.
+✅ Use **System Mapper** first for best accuracy.
+""")
+
     st.markdown("""---  
 📧 For questions or support, contact: **sergeym@polytex.co.il**""")

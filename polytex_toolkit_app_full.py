@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-from email_util import send_excel_email
 import json
 from pathlib import Path
 from streamlit_sortables import sort_items
@@ -21,6 +20,7 @@ app_options = {
     "📂 Service Distribution Transformer": "distribution_transformer_app",
     "📦 Spare Parts Usage": "parts_dashboard",
     "🧠 System Mapper": "system_mapper_app_final",
+    "🔎 Service Call Finder": "scfapp",
     "❓ Help & Guide": "help_app"
 }
 
@@ -44,6 +44,12 @@ if CONFIG_FILE.exists():
 else:
     config_data = {tool: {"visible": True, "order": i} for i, tool in enumerate(app_options)}
 
+# 🧩 Add any missing tools from app_options into tool_config
+for tool in app_options:
+    if tool not in config_data:
+        config_data[tool] = {"visible": True, "order": len(config_data)}
+
+
 if "tool_config" not in st.session_state:
     st.session_state.tool_config = config_data
 
@@ -64,27 +70,16 @@ with st.expander("🔑 Admin Login"):
 # ===============================
 if st.session_state.admin:
     st.subheader("🛠️ Tool Settings: Drag to Reorder & Toggle Visibility")
-
-    # Sort based on current order
     current_tools = sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
     tool_labels = [tool for tool, _ in current_tools]
-
-    # Drag to sort
     sorted_labels = sort_items(tool_labels, direction="vertical")
-
-    # Update order in session state
     for i, tool in enumerate(sorted_labels):
         st.session_state.tool_config[tool]["order"] = i
-
-    # Toggle visibility
-    changed = False
     for tool in sorted_labels:
         current_val = st.session_state.tool_config[tool]["visible"]
         new_val = st.checkbox(tool, value=current_val, key=f"vis_{tool}")
         if new_val != current_val:
             st.session_state.tool_config[tool]["visible"] = new_val
-            changed = True
-
     if st.button("💾 Save Tool Configuration"):
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(st.session_state.tool_config, f, ensure_ascii=False, indent=2)
@@ -139,6 +134,10 @@ elif app_file == "system_mapper_app_final":
 elif app_file == "help_app":
     import help_app
     help_app.run_app()
+
+elif app_file == "scfapp":
+    import scfapp
+    scfapp.run_app()
 
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
