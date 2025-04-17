@@ -88,7 +88,7 @@ Helps logistics by categorizing systems based on code.
             st.markdown("""
 ### 📦 Spare Parts Usage  
 Dashboard for filtering spare part usage by technician, part, model.  
-Use Priority’s “Spare Parts Used in Calls” report.  
+Use Priority’s “Spare Parts Reported in Service Calls” report.  
 Upload the report (חלקים שדווחו בקריאות שירות) as is.
 """)
 
