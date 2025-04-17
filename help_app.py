@@ -89,8 +89,7 @@ Helps logistics by categorizing systems based on code.
 ### 📦 Spare Parts Usage  
 Dashboard for filtering spare part usage by technician, part, model.  
 Use Priority’s “Spare Parts Used in Calls” report.  
-
-✅ Use **System Mapper** first for best accuracy.
+Upload the report (חלקים שדווחו בקריאות שירות) as is.
 """)
 
         elif tool == "🧠 System Mapper":
