@@ -3,8 +3,28 @@ from PIL import Image
 import json
 from pathlib import Path
 from streamlit_sortables import sort_items
+import threading
+import requests
+import time
 
 st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
+
+# Self-ping function to keep the app alive
+def self_ping():
+    while True:
+        try:
+            requests.get("https://polytex-service-toolkit.streamlit.app/")
+            print("Ping successful")
+        except Exception as e:
+            print(f"Ping failed: {e}")
+        time.sleep(300)
+
+# Start the ping thread only once per session
+if "ping_thread" not in st.session_state:
+    ping_thread = threading.Thread(target=self_ping, daemon=True)
+    ping_thread.start()
+    st.session_state.ping_thread = ping_thread
+
 
 # ===============================
 # 📦 Tool Definitions
