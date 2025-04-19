@@ -45,7 +45,7 @@ def run_app():
             if not filtered.empty:
                 display_cols = [
                     "מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה",
-                    "מק"ט - חלק", "תאור מוצר - חלק", "כמות בפועל"
+                    'מק"ט - חלק', "תאור מוצר - חלק", "כמות בפועל"
                 ]
                 existing_cols = [col for col in display_cols if col in filtered.columns]
                 filtered_result = filtered[existing_cols].drop_duplicates()
