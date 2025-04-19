@@ -53,13 +53,11 @@ def run_app():
             faults = merged["תאור תקלה"].dropna().unique()
             selected_fault = st.selectbox("בחר תאור תקלה", sorted(faults), key="fault_combo")
 
+            selected_action = None
             if selected_fault:
-                actions = merged[merged["תאור תקלה"] == selected_fault]["תאור קוד פעולה"].dropna().unique()
-            else:
-                actions = merged["תאור קוד פעולה"].dropna().unique()
-            selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(actions), key="action_combo")
-
-            file_suffix = f"תקלה_{selected_fault}_פעולה_{selected_action}"
+                filtered_actions = merged[merged["תאור תקלה"] == selected_fault]["תאור קוד פעולה"].dropna().unique()
+                selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(filtered_actions), key="action_combo")
+                file_suffix = f"תקלה_{selected_fault}_פעולה_{selected_action}"
 
         if st.button("🔍 חפש"):
             if search_mode == "מספר קריאה" and selected_call:
@@ -89,7 +87,6 @@ def run_app():
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     filtered_result.to_excel(writer, index=False, sheet_name='תוצאות חיפוש')
-                    workbook = writer.book
                     worksheet = writer.sheets['תוצאות חיפוש']
                     for i, col in enumerate(filtered_result.columns):
                         max_len = max(filtered_result[col].astype(str).map(len).max(), len(col)) + 1
