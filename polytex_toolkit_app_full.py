@@ -1,30 +1,11 @@
+
 import streamlit as st
 from PIL import Image
 import json
 from pathlib import Path
 from streamlit_sortables import sort_items
-import threading
-import requests
-import time
 
 st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
-
-# Self-ping function to keep the app alive
-def self_ping():
-    while True:
-        try:
-            requests.get("https://polytex-service-toolkit.streamlit.app/")
-            print("Ping successful")
-        except Exception as e:
-            print(f"Ping failed: {e}")
-        time.sleep(300)
-
-# Start the ping thread only once per session
-if "ping_thread" not in st.session_state:
-    ping_thread = threading.Thread(target=self_ping, daemon=True)
-    ping_thread.start()
-    st.session_state.ping_thread = ping_thread
-
 
 # ===============================
 # 📦 Tool Definitions
@@ -48,30 +29,27 @@ CONFIG_FILE = Path("visibility_config.json")
 
 # ===============================
 # 🔃 Load or Migrate Config
-# ===============================
-if CONFIG_FILE.exists():
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        raw = json.load(f)
-    config_data = {}
-    for i, (tool, val) in enumerate(raw.items()):
-        if isinstance(val, dict):
-            config_data[tool] = {
-                "visible": val.get("visible", True),
-                "order": val.get("order", i)
-            }
-        else:
-            config_data[tool] = {"visible": bool(val), "order": i}
-else:
-    config_data = {tool: {"visible": True, "order": i} for i, tool in enumerate(app_options)}
 
-# 🧩 Add any missing tools from app_options into tool_config
-for tool in app_options:
-    if tool not in config_data:
-        config_data[tool] = {"visible": True, "order": len(config_data)}
+import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import firestore
 
+# Initialize Firestore from Streamlit secrets
+key_dict = st.secrets["firestore"]
+credentials = service_account.Credentials.from_service_account_info(key_dict)
+db = firestore.Client(credentials=credentials, project=key_dict["project_id"])
+
+# Load config from Firestore
+def load_config():
+    doc = db.collection("configs").document("tool_config").get()
+    return doc.to_dict() if doc.exists else {}
+
+# Save config to Firestore
+def save_config(config_data):
+    db.collection("configs").document("tool_config").set(config_data)
 
 if "tool_config" not in st.session_state:
-    st.session_state.tool_config = config_data
+    st.session_state.tool_config = load_config()
 
 # ===============================
 # 🔐 Admin Login
@@ -101,9 +79,8 @@ if st.session_state.admin:
         if new_val != current_val:
             st.session_state.tool_config[tool]["visible"] = new_val
     if st.button("💾 Save Tool Configuration"):
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(st.session_state.tool_config, f, ensure_ascii=False, indent=2)
-        st.success("✅ Settings saved!")
+        save_config(st.session_state.tool_config)
+        st.success("✅ Settings saved to Firestore!")
 
 # ===============================
 # 🔧 Logo & Title
