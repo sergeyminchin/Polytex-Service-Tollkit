@@ -4,7 +4,7 @@ import pandas as pd
 import io
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם אפשרויות מתוך הקובץ")
+    st.title("חיפוש בקריאות שירות")
 
     service_file = st.file_uploader("העלה קובץ קריאות שירות", type=["xlsx"])
     parts_file = st.file_uploader("העלה קובץ חלקים", type=["xlsx"])
