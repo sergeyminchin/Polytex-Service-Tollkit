@@ -32,21 +32,34 @@ def run_app():
         )
 
         selected_call = selected_fault = selected_action = None
+        file_suffix = ""
 
         if search_mode == "מספר קריאה":
             options = merged["מספר קריאה"].astype(str).dropna().unique()
             selected_call = st.selectbox("בחר מספר קריאה", sorted(options))
+            file_suffix = f"מספר_קריאה_{selected_call}"
+
         elif search_mode == "תאור תקלה":
             options = merged["תאור תקלה"].dropna().unique()
             selected_fault = st.selectbox("בחר תאור תקלה", sorted(options))
+            file_suffix = f"תאור_תקלה_{selected_fault}"
+
         elif search_mode == "תאור קוד פעולה":
             options = merged["תאור קוד פעולה"].dropna().unique()
             selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(options))
+            file_suffix = f"תאור_פעולה_{selected_action}"
+
         elif search_mode == "תאור תקלה וגם תאור קוד פעולה":
             faults = merged["תאור תקלה"].dropna().unique()
-            actions = merged["תאור קוד פעולה"].dropna().unique()
             selected_fault = st.selectbox("בחר תאור תקלה", sorted(faults), key="fault_combo")
+
+            if selected_fault:
+                actions = merged[merged["תאור תקלה"] == selected_fault]["תאור קוד פעולה"].dropna().unique()
+            else:
+                actions = merged["תאור קוד פעולה"].dropna().unique()
             selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(actions), key="action_combo")
+
+            file_suffix = f"תקלה_{selected_fault}_פעולה_{selected_action}"
 
         if st.button("🔍 חפש"):
             if search_mode == "מספר קריאה" and selected_call:
@@ -76,12 +89,18 @@ def run_app():
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     filtered_result.to_excel(writer, index=False, sheet_name='תוצאות חיפוש')
-                output.seek(0)
+                    workbook = writer.book
+                    worksheet = writer.sheets['תוצאות חיפוש']
+                    for i, col in enumerate(filtered_result.columns):
+                        max_len = max(filtered_result[col].astype(str).map(len).max(), len(col)) + 1
+                        worksheet.set_column(i, i, max_len)
 
+                output.seek(0)
+                safe_suffix = file_suffix.replace(" ", "_").replace("/", "_")
                 st.download_button(
                     label="📥 הורד תוצאות לאקסל",
                     data=output,
-                    file_name="תוצאות_חיפוש.xlsx",
+                    file_name=f"תוצאות_חיפוש_{safe_suffix}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             else:
