@@ -98,7 +98,7 @@ try:
 except:
     st.warning("Logo not found.")
 
-st.title("🛠️ Polytex Service Toolkit")
+st.markdown("<h1 style='font-size: 42px;'>🛠️ Polytex Service Toolkit</h1>", unsafe_allow_html=True)
 
 # ===============================
 # 📋 Filter and Sort Tools for Menu
