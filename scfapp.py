@@ -4,7 +4,7 @@ import pandas as pd
 import io
 
 def run_app():
-    st.title("🔍 חיפוש דינמי לפי שדות בקובץ")
+    st.title("🔍 חיפוש לפי שדה עם אפשרויות מתוך הקובץ")
 
     service_file = st.file_uploader("העלה קובץ קריאות שירות", type=["xlsx"])
     parts_file = st.file_uploader("העלה קובץ חלקים", type=["xlsx"])
@@ -26,21 +26,42 @@ def run_app():
             how="left"
         )
 
-        # הצגת עמודות טקסטואליות לחיפוש
-        search_fields = [col for col in merged.columns if merged[col].dtype == "object" or merged[col].dtype.name == "string"]
-        selected_fields = st.multiselect("בחר שדות לחיפוש:", search_fields, default=["מספר קריאה"])
+        search_mode = st.radio(
+            "בחר דרך חיפוש:",
+            ["מספר קריאה", "תאור תקלה", "תאור קוד פעולה", "תאור תקלה וגם תאור קוד פעולה"]
+        )
 
-        user_queries = {}
-        for field in selected_fields:
-            user_queries[field] = st.text_input(f"הזן ערך לחיפוש ב־{field}", key=f"query_{field}")
+        selected_call = selected_fault = selected_action = None
+
+        if search_mode == "מספר קריאה":
+            options = merged["מספר קריאה"].astype(str).dropna().unique()
+            selected_call = st.selectbox("בחר מספר קריאה", sorted(options))
+        elif search_mode == "תאור תקלה":
+            options = merged["תאור תקלה"].dropna().unique()
+            selected_fault = st.selectbox("בחר תאור תקלה", sorted(options))
+        elif search_mode == "תאור קוד פעולה":
+            options = merged["תאור קוד פעולה"].dropna().unique()
+            selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(options))
+        elif search_mode == "תאור תקלה וגם תאור קוד פעולה":
+            faults = merged["תאור תקלה"].dropna().unique()
+            actions = merged["תאור קוד פעולה"].dropna().unique()
+            selected_fault = st.selectbox("בחר תאור תקלה", sorted(faults), key="fault_combo")
+            selected_action = st.selectbox("בחר תאור קוד פעולה", sorted(actions), key="action_combo")
 
         if st.button("🔍 חפש"):
-            filtered = merged.copy()
-            for field, query in user_queries.items():
-                if query:
-                    query_clean = str(query).strip()
-                    filtered[field] = filtered[field].astype(str).str.strip()
-                    filtered = filtered[filtered[field].str.contains(query_clean, case=False, na=False)]
+            if search_mode == "מספר קריאה" and selected_call:
+                filtered = merged[merged["מספר קריאה"].astype(str) == str(selected_call)]
+            elif search_mode == "תאור תקלה" and selected_fault:
+                filtered = merged[merged["תאור תקלה"] == selected_fault]
+            elif search_mode == "תאור קוד פעולה" and selected_action:
+                filtered = merged[merged["תאור קוד פעולה"] == selected_action]
+            elif search_mode == "תאור תקלה וגם תאור קוד פעולה" and selected_fault and selected_action:
+                filtered = merged[
+                    (merged["תאור תקלה"] == selected_fault) &
+                    (merged["תאור קוד פעולה"] == selected_action)
+                ]
+            else:
+                filtered = pd.DataFrame()
 
             if not filtered.empty:
                 display_cols = [
