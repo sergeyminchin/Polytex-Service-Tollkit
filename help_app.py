@@ -114,7 +114,8 @@ Search by:
 - Or both תאור תקלה AND תאור קוד פעולה combined.
 
 📂 Upload both the קריאות שירות (Service Calls) and the חלקים שדווחו בקריאות (Parts Used) Excel reports.
-📥 Results include model, fault, action, spare part info, and allow exporting to Excel.
+📥 Results include model, fault, action, and spare part information, allowing for export to Excel.
+
 ✅ Use **System Mapper** first for best accuracy.
 """)
 
