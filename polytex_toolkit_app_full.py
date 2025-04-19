@@ -98,7 +98,7 @@ try:
 except:
     st.warning("Logo not found.")
 
-st.markdown("<h1 style='font-size: 50px;'>🛠️ Polytex Service Toolkit</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 54px;'>🛠️ Polytex Service Toolkit</h1>", unsafe_allow_html=True)
 
 # ===============================
 # 📋 Filter and Sort Tools for Menu
