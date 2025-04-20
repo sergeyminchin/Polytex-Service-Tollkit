@@ -4,7 +4,7 @@ import pandas as pd
 import io
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם DEBUG")
+    st.title("🔍 חיפוש לפי שדה עם DEBUG + בדיקת שלמות מידע")
 
     debug_mode = st.checkbox("🔧 הפעל מצב DEBUG")
 
@@ -21,13 +21,8 @@ def run_app():
 
         service_call_col = "מס. קריאה" if "מס. קריאה" in service_df.columns else "מספר קריאה"
 
-        # Normalize call numbers
         parts_df["מספר קריאה"] = parts_df["מספר קריאה"].astype(str).str.strip().str.replace(".0", "", regex=False)
         service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
-
-        if debug_mode:
-            st.write("🔎 חלקים - מספר קריאה:", parts_df["מספר קריאה"].unique()[:10])
-            st.write("🔎 שירות - מספר קריאה:", service_df[service_call_col].unique()[:10])
 
         merged = pd.merge(
             parts_df,
@@ -39,6 +34,15 @@ def run_app():
 
         if debug_mode:
             st.write("📋 merged preview", merged.head(10))
+
+        missing_data = merged[merged["תאור תקלה"].isna() | merged["תאור קוד פעולה"].isna()]
+        if not missing_data.empty:
+            st.warning(f"⚠️ נמצאו {len(missing_data)} שורות ללא תאור תקלה או פעולה")
+            if debug_mode:
+                st.dataframe(missing_data[["מספר קריאה", "תאור תקלה", "תאור קוד פעולה"]].drop_duplicates())
+
+        # סינון רק לשורות עם מידע מלא
+        merged = merged.dropna(subset=["תאור תקלה", "תאור קוד פעולה"])
 
         search_mode = st.radio(
             "בחר דרך חיפוש:",
