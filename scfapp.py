@@ -2,22 +2,22 @@
 import streamlit as st
 import pandas as pd
 import io
+import re
+
+def normalize_text(s):
+    if pd.isna(s):
+        return ""
+    return re.sub(r"[\u200e\u202c\s]+", " ", str(s)).strip()
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם DEBUG + בדיקת שלמות מידע")
-
-    debug_mode = st.checkbox("🔧 הפעל מצב DEBUG")
+    st.title("🔍 חיפוש עם נרמול תווים נסתרים")
 
     service_file = st.file_uploader("העלה קובץ קריאות שירות", type=["xlsx"])
     parts_file = st.file_uploader("העלה קובץ חלקים", type=["xlsx"])
 
     if service_file and parts_file:
-        try:
-            service_df = pd.read_excel(service_file)
-            parts_df = pd.read_excel(parts_file)
-        except Exception as e:
-            st.error(f"שגיאה בטעינת הקבצים: {e}")
-            return
+        service_df = pd.read_excel(service_file)
+        parts_df = pd.read_excel(parts_file)
 
         service_call_col = "מס. קריאה" if "מס. קריאה" in service_df.columns else "מספר קריאה"
 
@@ -32,17 +32,10 @@ def run_app():
             how="left"
         )
 
-        if debug_mode:
-            st.write("📋 merged preview", merged.head(10))
-
-        missing_data = merged[merged["תאור תקלה"].isna() | merged["תאור קוד פעולה"].isna()]
-        if not missing_data.empty:
-            st.warning(f"⚠️ נמצאו {len(missing_data)} שורות ללא תאור תקלה או פעולה")
-            if debug_mode:
-                st.dataframe(missing_data[["מספר קריאה", "תאור תקלה", "תאור קוד פעולה"]].drop_duplicates())
-
-        # סינון רק לשורות עם מידע מלא
-        merged = merged.dropna(subset=["תאור תקלה", "תאור קוד פעולה"])
+        # Normalize text fields
+        for col in ["דגם", "תאור תקלה", "תאור קוד פעולה"]:
+            if col in merged.columns:
+                merged[col] = merged[col].apply(normalize_text)
 
         search_mode = st.radio(
             "בחר דרך חיפוש:",
@@ -53,7 +46,7 @@ def run_app():
         file_suffix = ""
 
         if search_mode == "מספר קריאה":
-            options = merged["מספר קריאה"].astype(str).dropna().unique()
+            options = merged["מספר קריאה"].dropna().unique()
             selected_call = st.selectbox("בחר מספר קריאה", sorted(options))
             file_suffix = f"מספר_קריאה_{selected_call}"
 
@@ -91,9 +84,6 @@ def run_app():
                 ]
             else:
                 filtered = pd.DataFrame()
-
-            if debug_mode:
-                st.write("📊 תוצאות חיפוש:", filtered)
 
             if not filtered.empty:
                 display_cols = [
