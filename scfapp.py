@@ -4,7 +4,7 @@ import pandas as pd
 import io
 
 def run_app():
-    st.title("חיפוש בקריאות שירות")
+    st.title("🔍 חיפוש לפי שדה עם אפשרויות מתוך הקובץ")
 
     service_file = st.file_uploader("העלה קובץ קריאות שירות", type=["xlsx"])
     parts_file = st.file_uploader("העלה קובץ חלקים", type=["xlsx"])
@@ -18,6 +18,11 @@ def run_app():
             return
 
         service_call_col = "מס. קריאה" if "מס. קריאה" in service_df.columns else "מספר קריאה"
+
+        # אחידות בשדה מספר קריאה בשני הקבצים
+        parts_df["מספר קריאה"] = parts_df["מספר קריאה"].astype(str).str.strip().str.replace(".0", "", regex=False)
+        service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
+
         merged = pd.merge(
             parts_df,
             service_df[[service_call_col, "תאור תקלה", "תאור קוד פעולה"]],
@@ -61,7 +66,7 @@ def run_app():
 
         if st.button("🔍 חפש"):
             if search_mode == "מספר קריאה" and selected_call:
-                filtered = merged[merged["מספר קריאה"].astype(str) == str(selected_call)]
+                filtered = merged[merged["מספר קריאה"] == str(selected_call)]
             elif search_mode == "תאור תקלה" and selected_fault:
                 filtered = merged[merged["תאור תקלה"] == selected_fault]
             elif search_mode == "תאור קוד פעולה" and selected_action:
@@ -102,3 +107,4 @@ def run_app():
                 )
             else:
                 st.warning("לא נמצאו תוצאות.")
+
