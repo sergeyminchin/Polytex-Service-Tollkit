@@ -27,6 +27,7 @@ def run_app():
         service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
 
         merged = pd.merge(
+        merged.rename(columns={'דגם_x': 'דגם'}, inplace=True)
             service_df,
             parts_df,
             left_on=service_call_col,
