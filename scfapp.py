@@ -10,7 +10,7 @@ def normalize_text(s):
     return re.sub(r"[\u200e\u202c]", "", str(s)).strip()
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם מצב גמיש או מדויק + דיאגנוסטיקה")
+    st.title("🔍 חיפוש לפי שדה עם מצב גמיש כולל דגם + דיאגנוסטיקה")
 
     search_mode = st.radio("בחר סוג חיפוש:", ["🔒 חיפוש מדויק", "🔎 חיפוש גמיש (מכיל)"])
     is_exact = search_mode == "🔒 חיפוש מדויק"
@@ -88,12 +88,14 @@ def run_app():
                 if is_exact:
                     filtered = merged[
                         (merged["תאור תקלה"] == selected_fault) &
-                        (merged["תאור קוד פעולה"] == selected_action)
+                        (merged["תאור קוד פעולה"] == selected_action) &
+                        (merged["דגם"] == "DX00 PRO")
                     ]
                 else:
                     filtered = merged[
                         merged["תאור תקלה"].str.contains(selected_fault, na=False) &
-                        merged["תאור קוד פעולה"].str.contains(selected_action, na=False)
+                        merged["תאור קוד פעולה"].str.contains(selected_action, na=False) &
+                        merged["דגם"].str.contains("DX00", na=False)
                     ]
             else:
                 filtered = pd.DataFrame()
@@ -127,12 +129,12 @@ def run_app():
             else:
                 st.warning("לא נמצאו תוצאות.")
 
-        # Diagnostic view (optional)
+        # Diagnostic
         if search_by == "תאור תקלה וגם תאור קוד פעולה" and selected_fault and selected_action and st.checkbox("הצג דיאגנוסטיקה לשורות שלא נמצאו"):
             diagnostic = merged[merged["תאור תקלה"].notna() & merged["תאור קוד פעולה"].notna()].copy()
-            diagnostic["✅ דגם תואם"] = diagnostic["דגם"] == "DX00 PRO"
-            diagnostic["✅ תקלה תואמת"] = diagnostic["תאור תקלה"] == selected_fault
-            diagnostic["✅ פעולה תואמת"] = diagnostic["תאור קוד פעולה"] == selected_action
+            diagnostic["✅ דגם תואם"] = diagnostic["דגם"].str.contains("DX00", na=False)
+            diagnostic["✅ תקלה תואמת"] = diagnostic["תאור תקלה"].str.contains(selected_fault, na=False)
+            diagnostic["✅ פעולה תואמת"] = diagnostic["תאור קוד פעולה"].str.contains(selected_action, na=False)
             diagnostic["📌 סיבה"] = diagnostic.apply(
                 lambda row: "❌ דגם" if not row["✅ דגם תואם"]
                 else "❌ תקלה" if not row["✅ תקלה תואמת"]
