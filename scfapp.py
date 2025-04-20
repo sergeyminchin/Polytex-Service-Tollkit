@@ -34,7 +34,8 @@ def run_app():
             how="left"
         )
 
-        for col in ["דגם", "תאור תקלה", "תאור קוד פעולה"]:
+        for col in ["דגם_x", "תאור תקלה", "תאור קוד פעולה"]:
+        merged.rename(columns={"דגם_x": "דגם"}, inplace=True)
             merged[col] = merged[col].astype(str).apply(normalize_text).str.strip()
 
         search_by = st.radio(
