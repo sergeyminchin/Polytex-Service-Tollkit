@@ -4,7 +4,9 @@ import pandas as pd
 import io
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם אפשרויות מתוך הקובץ")
+    st.title("🔍 חיפוש לפי שדה עם DEBUG")
+
+    debug_mode = st.checkbox("🔧 הפעל מצב DEBUG")
 
     service_file = st.file_uploader("העלה קובץ קריאות שירות", type=["xlsx"])
     parts_file = st.file_uploader("העלה קובץ חלקים", type=["xlsx"])
@@ -19,9 +21,13 @@ def run_app():
 
         service_call_col = "מס. קריאה" if "מס. קריאה" in service_df.columns else "מספר קריאה"
 
-        # אחידות בשדה מספר קריאה בשני הקבצים
+        # Normalize call numbers
         parts_df["מספר קריאה"] = parts_df["מספר קריאה"].astype(str).str.strip().str.replace(".0", "", regex=False)
         service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
+
+        if debug_mode:
+            st.write("🔎 חלקים - מספר קריאה:", parts_df["מספר קריאה"].unique()[:10])
+            st.write("🔎 שירות - מספר קריאה:", service_df[service_call_col].unique()[:10])
 
         merged = pd.merge(
             parts_df,
@@ -30,6 +36,9 @@ def run_app():
             right_on=service_call_col,
             how="left"
         )
+
+        if debug_mode:
+            st.write("📋 merged preview", merged.head(10))
 
         search_mode = st.radio(
             "בחר דרך חיפוש:",
@@ -79,6 +88,9 @@ def run_app():
             else:
                 filtered = pd.DataFrame()
 
+            if debug_mode:
+                st.write("📊 תוצאות חיפוש:", filtered)
+
             if not filtered.empty:
                 display_cols = [
                     "מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה",
@@ -107,4 +119,3 @@ def run_app():
                 )
             else:
                 st.warning("לא נמצאו תוצאות.")
-
