@@ -10,7 +10,7 @@ def normalize_text(s):
     return re.sub(r"[\u200e\u202c]", "", str(s)).strip()
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם מצב גמיש כולל דגם + דיאגנוסטיקה")
+    st.title("🔍 חיפוש לפי שדה עם חלקים ריקים")
 
     search_mode = st.radio("בחר סוג חיפוש:", ["🔒 חיפוש מדויק", "🔎 חיפוש גמיש (מכיל)"])
     is_exact = search_mode == "🔒 חיפוש מדויק"
@@ -27,10 +27,10 @@ def run_app():
         service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
 
         merged = pd.merge(
+            service_df,
             parts_df,
-            service_df[[service_call_col, "תאור תקלה", "תאור קוד פעולה"]],
-            left_on="מספר קריאה",
-            right_on=service_call_col,
+            left_on=service_call_col,
+            right_on="מספר קריאה",
             how="left"
         )
 
@@ -46,7 +46,7 @@ def run_app():
         file_suffix = ""
 
         if search_by == "מספר קריאה":
-            options = merged["מספר קריאה"].dropna().unique()
+            options = merged[service_call_col].dropna().unique()
             selected_call = st.selectbox("בחר מספר קריאה", sorted(options))
             file_suffix = f"מספר_קריאה_{selected_call}"
 
@@ -72,7 +72,7 @@ def run_app():
 
         if st.button("🔍 חפש"):
             if search_by == "מספר קריאה" and selected_call:
-                filtered = merged[merged["מספר קריאה"] == selected_call]
+                filtered = merged[merged[service_call_col] == selected_call]
 
             elif search_by == "תאור תקלה" and selected_fault:
                 filtered = merged[
@@ -88,21 +88,19 @@ def run_app():
                 if is_exact:
                     filtered = merged[
                         (merged["תאור תקלה"] == selected_fault) &
-                        (merged["תאור קוד פעולה"] == selected_action) &
-                        (merged["דגם"] == "DX00 PRO")
+                        (merged["תאור קוד פעולה"] == selected_action)
                     ]
                 else:
                     filtered = merged[
                         merged["תאור תקלה"].str.contains(selected_fault, na=False) &
-                        merged["תאור קוד פעולה"].str.contains(selected_action, na=False) &
-                        merged["דגם"].str.contains("DX00", na=False)
+                        merged["תאור קוד פעולה"].str.contains(selected_action, na=False)
                     ]
             else:
                 filtered = pd.DataFrame()
 
             if not filtered.empty:
                 display_cols = [
-                    "מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה",
+                    service_call_col, "דגם", "תאור תקלה", "תאור קוד פעולה",
                     'מק"ט - חלק', "תאור מוצר - חלק", "כמות בפועל"
                 ]
                 existing_cols = [col for col in display_cols if col in filtered.columns]
@@ -128,17 +126,3 @@ def run_app():
                 )
             else:
                 st.warning("לא נמצאו תוצאות.")
-
-        # Diagnostic
-        if search_by == "תאור תקלה וגם תאור קוד פעולה" and selected_fault and selected_action and st.checkbox("הצג דיאגנוסטיקה לשורות שלא נמצאו"):
-            diagnostic = merged[merged["תאור תקלה"].notna() & merged["תאור קוד פעולה"].notna()].copy()
-            diagnostic["✅ דגם תואם"] = diagnostic["דגם"].str.contains("DX00", na=False)
-            diagnostic["✅ תקלה תואמת"] = diagnostic["תאור תקלה"].str.contains(selected_fault, na=False)
-            diagnostic["✅ פעולה תואמת"] = diagnostic["תאור קוד פעולה"].str.contains(selected_action, na=False)
-            diagnostic["📌 סיבה"] = diagnostic.apply(
-                lambda row: "❌ דגם" if not row["✅ דגם תואם"]
-                else "❌ תקלה" if not row["✅ תקלה תואמת"]
-                else "❌ פעולה" if not row["✅ פעולה תואמת"]
-                else "✔️ תואם", axis=1
-            )
-            st.dataframe(diagnostic[["מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה", "📌 סיבה"]])
