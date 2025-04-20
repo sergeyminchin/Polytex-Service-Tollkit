@@ -12,6 +12,7 @@ def normalize_text(s):
 def run_app():
     st.title("🔍 חיפוש לפי שדה עם מצב גמיש או מדויק")
 
+    # ✅ Mode switch always visible
     search_mode = st.radio("בחר סוג חיפוש:", ["🔒 חיפוש מדויק", "🔎 חיפוש גמיש (מכיל)"])
     is_exact = search_mode == "🔒 חיפוש מדויק"
 
