@@ -7,12 +7,11 @@ import re
 def normalize_text(s):
     if pd.isna(s):
         return ""
-    return re.sub(r"[\u200e\u202c\s]+", " ", str(s)).strip()
+    return re.sub(r"[\u200e\u202c]", "", str(s)).strip()
 
 def run_app():
-    st.title("🔍 חיפוש לפי שדה עם מצב גמיש או מדויק")
+    st.title("🔍 חיפוש לפי שדה עם מצב גמיש או מדויק + דיאגנוסטיקה")
 
-    # ✅ Mode switch always visible
     search_mode = st.radio("בחר סוג חיפוש:", ["🔒 חיפוש מדויק", "🔎 חיפוש גמיש (מכיל)"])
     is_exact = search_mode == "🔒 חיפוש מדויק"
 
@@ -24,7 +23,6 @@ def run_app():
         parts_df = pd.read_excel(parts_file)
 
         service_call_col = "מס. קריאה" if "מס. קריאה" in service_df.columns else "מספר קריאה"
-
         parts_df["מספר קריאה"] = parts_df["מספר קריאה"].astype(str).str.strip().str.replace(".0", "", regex=False)
         service_df[service_call_col] = service_df[service_call_col].astype(str).str.strip().str.replace(".0", "", regex=False)
 
@@ -37,8 +35,7 @@ def run_app():
         )
 
         for col in ["דגם", "תאור תקלה", "תאור קוד פעולה"]:
-            if col in merged.columns:
-                merged[col] = merged[col].apply(normalize_text)
+            merged[col] = merged[col].astype(str).apply(normalize_text).str.strip()
 
         search_by = st.radio(
             "בחר דרך חיפוש:",
@@ -129,3 +126,17 @@ def run_app():
                 )
             else:
                 st.warning("לא נמצאו תוצאות.")
+
+        # Diagnostic view (optional)
+        if search_by == "תאור תקלה וגם תאור קוד פעולה" and selected_fault and selected_action and st.checkbox("הצג דיאגנוסטיקה לשורות שלא נמצאו"):
+            diagnostic = merged[merged["תאור תקלה"].notna() & merged["תאור קוד פעולה"].notna()].copy()
+            diagnostic["✅ דגם תואם"] = diagnostic["דגם"] == "DX00 PRO"
+            diagnostic["✅ תקלה תואמת"] = diagnostic["תאור תקלה"] == selected_fault
+            diagnostic["✅ פעולה תואמת"] = diagnostic["תאור קוד פעולה"] == selected_action
+            diagnostic["📌 סיבה"] = diagnostic.apply(
+                lambda row: "❌ דגם" if not row["✅ דגם תואם"]
+                else "❌ תקלה" if not row["✅ תקלה תואמת"]
+                else "❌ פעולה" if not row["✅ פעולה תואמת"]
+                else "✔️ תואם", axis=1
+            )
+            st.dataframe(diagnostic[["מספר קריאה", "דגם", "תאור תקלה", "תאור קוד פעולה", "📌 סיבה"]])
