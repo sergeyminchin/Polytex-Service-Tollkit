@@ -22,7 +22,7 @@ app_options = {
     "📦 Spare Parts Usage": "parts_dashboard",
     "🧠 System Mapper": "system_mapper_app_final",
     "🔎 Service Call Finder": "scfapp",
-    "👥 User Group Splitter": "UGS",
+    "👥 User Group Splitter": "ugs",
     "❓ Help & Guide": "help_app"
 }
 
@@ -143,9 +143,9 @@ elif app_file == "help_app":
     help_app.run_app()
 
 
-elif app_file == "UGS":
-    import UGS
-    UGS.run_app()
+elif app_file == "ugs":
+    import ugs
+    ugs.run_app()
 elif app_file == "scfapp":
     import scfapp
     scfapp.run_app()
