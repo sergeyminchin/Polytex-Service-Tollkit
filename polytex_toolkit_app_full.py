@@ -1,105 +1,163 @@
-st.set_page_config(page_title="User Group Exporter", layout="centered")
 
-def run_app():
-    import pandas as pd
-    import streamlit as st
-    import io
+import streamlit as st
+from PIL import Image
+import json
+from pathlib import Path
+from streamlit_sortables import sort_items
 
-    st.title("📊 Export or Modify Users File")
+st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
 
-    uploaded_file = st.file_uploader("Upload the Users Excel File", type=["xlsx"])
+# ===============================
+# 📦 Tool Definitions
+# ===============================
+app_options = {
+    "🔁 Repeated Calls Analyzer": "repeated_calls",
+    "📊 Dashboard Q1 2024 VS Q1 2025": "dashboard",
+    "📈 Universal Dashboard": "Dashboard_un",
+    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
+    "🔧 Fixes per Unit": "device_fixes_app",
+    "📦 ServiceCalls_SpareParts": "app_final_built_clean",
+    "📂 Service Distribution Transformer": "distribution_transformer_app",
+    "📦 Spare Parts Usage": "parts_dashboard",
+    "🧠 System Mapper": "system_mapper_app_final",
+    "🔎 Service Call Finder": "scfapp",
+    "👥 User Group Splitter": "UGS",
+    "❓ Help & Guide": "help_app"
+}
 
-    mode = st.radio(
-        "Choose mode:",
-        ["Group and Export", "Modify and Export"]
-    )
+CONFIG_FILE = Path("visibility_config.json")
 
-    if uploaded_file:
-        df = pd.read_excel(uploaded_file, sheet_name="Users")
+# ===============================
+# 🔃 Load or Migrate Config
 
-        if mode == "Group and Export":
-            filter_option = st.radio(
-                "Choose filter type:",
-                options=["Limit Group", "Department", "Limit Group + Department"]
-            )
+import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import firestore
 
-            if filter_option == "Limit Group + Department":
-                df = df.dropna(subset=["Limit Group", "Department Name"])
-                group_cols = ["Limit Group", "Department Name"]
-            elif filter_option == "Limit Group":
-                df = df.dropna(subset=["Limit Group"])
-                group_cols = ["Limit Group"]
-            else:
-                df = df.dropna(subset=["Department Name"])
-                group_cols = ["Department Name"]
+# Initialize Firestore from Streamlit secrets
+key_dict = st.secrets["firestore"]
+credentials = service_account.Credentials.from_service_account_info(key_dict)
+db = firestore.Client(credentials=credentials, project=key_dict["project_id"])
 
-            grouped = df.groupby(group_cols)
+# Load config from Firestore
+def load_config():
+    doc = db.collection("configs").document("tool_config").get()
+    return doc.to_dict() if doc.exists else {}
 
-            output = io.BytesIO()
-            with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                for group_keys, group_df in grouped:
-                    if isinstance(group_keys, tuple):
-                        sheet_name = "_".join(str(key)[:15] for key in group_keys)
-                    else:
-                        sheet_name = str(group_keys)[:31]
-                    sheet_name = sheet_name.replace("/", "_").replace("\\", "_").replace(":", "_")
-                    if len(sheet_name) > 31:
-                        sheet_name = sheet_name[:31]
-                    group_df.to_excel(writer, sheet_name=sheet_name, index=False)
+# Save config to Firestore
+def save_config(config_data):
+    db.collection("configs").document("tool_config").set(config_data)
 
-            st.success("✅ Grouped Excel file is ready.")
-            st.download_button(
-                label="📥 Download Grouped Excel File",
-                data=output.getvalue(),
-                file_name=f"Users_By_{filter_option.replace(' + ', '_').replace(' ', '')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+if "tool_config" not in st.session_state:
+    st.session_state.tool_config = load_config()
+    if "👥 User Group Splitter" not in st.session_state.tool_config:
+        st.session_state.tool_config["👥 User Group Splitter"] = {"visible": True, "order": 11}
 
-        elif mode == "Modify and Export":
-            modify_option = st.radio(
-                "Choose value type to rename:",
-                ["Limit Group", "Department", "Limit Group + Department"]
-            )
+# ===============================
+# 🔐 Admin Login
+# ===============================
+if "admin" not in st.session_state:
+    st.session_state.admin = False
 
-            if modify_option == "Limit Group":
-                original_values = sorted(df["Limit Group"].dropna().unique())
-                selected_value = st.selectbox("Select Limit Group to rename:", original_values)
-                new_value = st.text_input("Enter new Limit Group name:")
-                if new_value:
-                    apply_change = st.button("Apply Change")
-                    if apply_change:
-                        df.loc[df["Limit Group"] == selected_value, "Limit Group"] = new_value
+with st.expander("🔑 Admin Login"):
+    password = st.text_input("Enter admin password", type="password")
+    if password == "polytex123":
+        st.session_state.admin = True
+        st.success("Admin mode enabled!")
 
-            elif modify_option == "Department":
-                original_values = sorted(df["Department Name"].dropna().unique())
-                selected_value = st.selectbox("Select Department to rename:", original_values)
-                new_value = st.text_input("Enter new Department name:")
-                if new_value:
-                    apply_change = st.button("Apply Change")
-                    if apply_change:
-                        df.loc[df["Department Name"] == selected_value, "Department Name"] = new_value
+# ⚠️ Temporary block to initialize Firestore config
+if st.session_state.admin and st.button("🛠️ Initialize Default Tool Config"):
+    save_config({'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '❓ Help & Guide': {'visible': True, 'order': 11}})
+    st.session_state.tool_config = {'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '❓ Help & Guide': {'visible': True, 'order': 11}}
+    st.success("✅ Default tool configuration initialized and saved to Firestore!")
 
-            elif modify_option == "Limit Group + Department":
-                pairs = df[["Limit Group", "Department Name"]].dropna().drop_duplicates()
-                pair_tuples = [tuple(x) for x in pairs.values]
-                selected_pair = st.selectbox("Select pair to rename:", pair_tuples)
-                new_limit = st.text_input("New Limit Group name:", value=selected_pair[0])
-                new_dept = st.text_input("New Department name:", value=selected_pair[1])
-                if new_limit and new_dept:
-                    apply_change = st.button("Apply Change")
-                    if apply_change:
-                        df.loc[(df["Limit Group"] == selected_pair[0]) & (df["Department Name"] == selected_pair[1]),
-                               ["Limit Group", "Department Name"]] = [new_limit, new_dept]
 
-            if "apply_change" in locals() and apply_change:
-                output = io.BytesIO()
-                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, sheet_name="Users", index=False)
+# ===============================
+# 🛠️ Admin Panel: Drag & Visibility
+# ===============================
+if st.session_state.admin:
+    st.subheader("🛠️ Tool Settings: Drag to Reorder & Toggle Visibility")
+    current_tools = sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
+    tool_labels = [tool for tool, _ in current_tools]
+    sorted_labels = sort_items(tool_labels, direction="vertical")
+    for i, tool in enumerate(sorted_labels):
+        st.session_state.tool_config[tool]["order"] = i
+    for tool in sorted_labels:
+        current_val = st.session_state.tool_config[tool]["visible"]
+        new_val = st.checkbox(tool, value=current_val, key=f"vis_{tool}")
+        if new_val != current_val:
+            st.session_state.tool_config[tool]["visible"] = new_val
+    if st.button("💾 Save Tool Configuration"):
+        save_config(st.session_state.tool_config)
+        st.success("✅ Settings saved to Firestore!")
 
-                st.success("✅ Modified file is ready.")
-                st.download_button(
-                    label="📥 Download Modified Excel File",
-                    data=output.getvalue(),
-                    file_name="Users_Modified.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+# ===============================
+# 🔧 Logo & Title
+# ===============================
+try:
+    logo = Image.open("logo.png")
+    st.image(logo, use_container_width=False)
+except:
+    st.warning("Logo not found.")
+
+st.markdown("<h1 style='font-size: 58px;'>🛠️ Polytex Service Toolkit</h1>", unsafe_allow_html=True)
+
+# ===============================
+# 📋 Filter and Sort Tools for Menu
+# ===============================
+visible_tools = {
+    tool: app_options[tool]
+    for tool, settings in sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
+    if settings["visible"]
+}
+
+if not visible_tools:
+    st.warning("No tools enabled. Enable at least one in Admin panel.")
+    st.stop()
+
+selected_tool = st.selectbox("Select a Tool", list(visible_tools.keys()))
+app_file = visible_tools[selected_tool]
+
+# ===============================
+# ▶️ Tool Loader
+# ===============================
+if app_file == "repeated_calls":
+    import repeated_calls
+    repeated_calls.run_app()
+
+elif app_file == "distribution_transformer_app":
+    from distribution_transformer_app import run_transformer_app
+    run_transformer_app()
+
+elif app_file == "parts_dashboard":
+    import parts_dashboard
+    parts_dashboard.run_app()
+
+elif app_file == "system_mapper_app_final":
+    import system_mapper_app_final as system_mapper_app
+    system_mapper_app.run_app()
+
+elif app_file == "help_app":
+    import help_app
+    help_app.run_app()
+
+
+elif app_file == "UGS":
+    import UGS
+    UGS.run_app()
+elif app_file == "scfapp":
+    import scfapp
+    scfapp.run_app()
+
+else:
+    with open(f"{app_file}.py", "r", encoding="utf-8") as f:
+        exec(f.read(), globals())
+
+# ===============================
+# Footer
+# ===============================
+st.markdown("---")
+st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
+st.markdown("📧 sergeym@polytex.co.il")
+st.markdown("📅 April 2025")
