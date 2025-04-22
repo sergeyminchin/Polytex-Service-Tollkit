@@ -195,6 +195,3 @@ st.markdown("---")
 st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
 st.markdown("📧 sergeym@polytex.co.il")
 st.markdown("📅 April 2025")
-elif app_file == "nri":
-    import nri
-    nri.run_app()
