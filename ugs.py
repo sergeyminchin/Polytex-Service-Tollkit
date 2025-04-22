@@ -38,7 +38,7 @@ def run_app():
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
                     for col in ["UserID", "CardID"]:
-                    df[col] = df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
+                        df[col] = df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                         if col in group_df.columns:
                             group_df[col] = group_df[col].astype(str).str.zfill(group_df[col].astype(str).str.len().max())
                     if isinstance(group_keys, tuple):
