@@ -86,7 +86,7 @@ if st.session_state.admin and st.button("🛠️ Initialize Default Tool Config"
     "📦 Unreturned Items Detector": {"visible": True, "order": 12},
     "❓ Help & Guide": {"visible": True, "order": 13}
 },
-        '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1},
+       {'📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1},
         '📈 Universal Dashboard': {'visible': True, 'order': 2},
         '🧯 Alerts Filtering': {'visible': True, 'order': 3},
         '📦 Duplicates RFID Readings': {'visible': True, 'order': 4},
