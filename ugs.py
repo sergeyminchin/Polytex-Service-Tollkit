@@ -116,6 +116,10 @@ def run_app():
                 for col in ["UserID", "CardID"]:
                     if col in df.columns:
                         df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
+                if isinstance(group_keys, tuple):
+                    sheet_name = "_".join(str(key)[:15] for key in group_keys)
+                else:
+                    sheet_name = str(group_keys)[:31]
 
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
