@@ -113,4 +113,17 @@ def run_app():
                     data=output.getvalue(),
                     file_name="Users_Modified.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, sheet_name='Users', index=False)
+            worksheet = writer.sheets['Users']
+            worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
+
+        st.success("✅ Modified file is ready.")
+        st.download_button(
+            label="📥 Download Modified Excel File",
+            data=output.getvalue(),
+            file_name="Users_Modified.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
