@@ -94,9 +94,9 @@ def run_app():
                                ["Limit Group", "Department Name"]] = [new_limit, new_dept]
 
             if "apply_change" in locals() and apply_change:
-        for col in ["UserID", "CardID"]:
-            if col in df.columns:
-                df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
+                for col in ["UserID", "CardID"]:
+                    if col in df.columns:
+                        df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, sheet_name="Users", index=False)
