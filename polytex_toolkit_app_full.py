@@ -71,7 +71,7 @@ if st.session_state.admin and st.button("🛠️ Initialize Default Tool Config"
     save_config({'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
         '❓ Help & Guide': {'visible': True, 'order': 11}})
     st.session_state.tool_config = {
-        '🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0},
+'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0},
         '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1},
         '📈 Universal Dashboard': {'visible': True, 'order': 2},
         '🧯 Alerts Filtering': {'visible': True, 'order': 3},
