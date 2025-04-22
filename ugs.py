@@ -1,10 +1,9 @@
+import streamlit as st
+import pandas as pd
+import io
 
 
 def run_app():
-    import pandas as pd
-    import streamlit as st
-    import io
-
     st.title("📊 Export or Modify Users File")
 
     uploaded_file = st.file_uploader("Upload the Users Excel File", type=["xlsx"])
@@ -40,6 +39,9 @@ def run_app():
                 for group_keys, group_df in grouped:
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
+                for col in ["UserID", "CardID"]:
+                    if col in group_df.columns:
+                        group_df[col] = group_df[col].astype(str)
                     else:
                         sheet_name = str(group_keys)[:31]
                     sheet_name = sheet_name.replace("/", "_").replace("\\", "_").replace(":", "_")
@@ -92,6 +94,9 @@ def run_app():
                                ["Limit Group", "Department Name"]] = [new_limit, new_dept]
 
             if "apply_change" in locals() and apply_change:
+        for col in ["UserID", "CardID"]:
+            if col in df.columns:
+                df[col] = df[col].astype(str)
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, sheet_name="Users", index=False)
