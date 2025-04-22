@@ -9,7 +9,7 @@ def run_app():
         if settings.get("visible", True)
     ]
 
-    st.markdown("Welcome to the **Polytex Service Toolkit** 👋  
+    st.markdown("Welcome to the **Polytex Service Toolkit** 👋  \nThis guide provides clear explanations for each tool available in the system.\n---")  
 This guide provides clear explanations for each tool available in the system.
 ---")
 
