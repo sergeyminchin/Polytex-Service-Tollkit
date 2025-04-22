@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
+st.set_page_config(page_title="User Group Exporter", layout="centered")
 
 def run_app():
     st.title("📊 Export or Modify Users File")
@@ -48,6 +49,8 @@ def run_app():
                     if len(sheet_name) > 31:
                         sheet_name = sheet_name[:31]
                     group_df.to_excel(writer, sheet_name=sheet_name, index=False)
+                worksheet = writer.sheets[sheet_name]
+                worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
 
             st.success("✅ Grouped Excel file is ready.")
             st.download_button(
@@ -94,12 +97,17 @@ def run_app():
                                ["Limit Group", "Department Name"]] = [new_limit, new_dept]
 
             if "apply_change" in locals() and apply_change:
-                for col in ["UserID", "CardID"]:
-                    if col in df.columns:
-                        df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
+            for col in ["UserID", "CardID"]:
+                if col in df.columns:
+                    df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
+        for col in ["UserID", "CardID"]:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, sheet_name="Users", index=False)
+            worksheet = writer.sheets['Users']
+            worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
 
                 st.success("✅ Modified file is ready.")
                 st.download_button(
