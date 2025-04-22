@@ -142,7 +142,7 @@ Two main features:
 2. **Modify and Export** – Rename Limit Groups, Departments, or pairings directly from the uploaded Excel and export a clean copy.
 
 📂 Upload the original 'Users' Excel file from PM8 and choose the option that fits your workflow.
-            """)
+""")
 
     st.markdown("""---  
 📧 For questions or support, contact: **sergeym@polytex.co.il**""")
