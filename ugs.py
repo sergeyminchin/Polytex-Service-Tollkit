@@ -1,4 +1,4 @@
-st.set_page_config(page_title="User Group Exporter", layout="centered")
+
 
 def run_app():
     import pandas as pd
