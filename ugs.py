@@ -135,7 +135,7 @@ def run_app():
             worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
 
         st.success("✅ Modified file is ready.")
-        st.download_button(
+        st.download_button()
             label="📥 Download Modified Excel File",
             data=output.getvalue(),
             file_name="Users_Modified.xlsx",
