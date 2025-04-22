@@ -143,6 +143,7 @@ elif app_file == "help_app":
 
 elif app_file == "UGS":
     import UGS
+    UGS.run_app()
 
 elif app_file == "scfapp":
     import scfapp
