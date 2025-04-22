@@ -3,7 +3,6 @@ import pandas as pd
 import streamlit as st
 import io
 
-st.set_page_config(page_title="User Group Exporter", layout="centered")
 st.title("📊 Export or Modify Users File")
 
 uploaded_file = st.file_uploader("Upload the Users Excel File", type=["xlsx"])
