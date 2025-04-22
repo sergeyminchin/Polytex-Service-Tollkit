@@ -13,8 +13,8 @@ def run_app():
     )
 
     if uploaded_file:
-        # Preserve leading zeros
-        df = pd.read_excel(uploaded_file, sheet_name='Users', dtype={'UserID': str, 'CardID': str})
+        # Read with all columns as strings to preserve leading zeros
+        df = pd.read_excel(uploaded_file, sheet_name='Users', dtype=str)
 
         if mode == "Group and Export":
             filter_option = st.radio(
@@ -33,19 +33,15 @@ def run_app():
                 group_cols = ['Department Name']
 
             grouped = df.groupby(group_cols)
-            # Ensure UserID and CardID remain as strings
-            for col in ["UserID", "CardID"]:
-                if col in df.columns:
-                    df[col] = df[col].astype(str)
-
 
             output = io.BytesIO()
-# Ensure UserID and CardID remain as strings
-            for col in ["UserID", "CardID"]:
-                if col in df.columns:
-                    df[col] = df[col].astype(str)
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
+                    # Ensure UserID and CardID in each group remain strings
+                    for col in ["UserID", "CardID"]:
+                        if col in group_df.columns:
+                            group_df[col] = group_df[col].astype(str)
+
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
@@ -107,6 +103,11 @@ def run_app():
                         ] = [new_limit, new_dept]
 
             if 'apply_change' in locals() and apply_change:
+                # Ensure UserID and CardID remain strings before export
+                for col in ["UserID", "CardID"]:
+                    if col in df.columns:
+                        df[col] = df[col].astype(str)
+
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     df.to_excel(writer, sheet_name='Users', index=False)
@@ -121,4 +122,3 @@ def run_app():
                     file_name="Users_Modified.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-
