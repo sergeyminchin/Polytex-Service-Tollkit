@@ -33,6 +33,11 @@ def run_app():
                 group_cols = ['Department Name']
 
             grouped = df.groupby(group_cols)
+            # Ensure UserID and CardID remain as strings
+            for col in ["UserID", "CardID"]:
+                if col in df.columns:
+                    df[col] = df[col].astype(str)
+
 
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
