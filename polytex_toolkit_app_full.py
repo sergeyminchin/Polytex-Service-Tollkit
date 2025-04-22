@@ -23,6 +23,7 @@ app_options = {
     "🧠 System Mapper": "system_mapper_app_final",
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
+    "📦 Unreturned Items Detector": "nri",
     "❓ Help & Guide": "help_app"
 }
 
@@ -149,6 +150,9 @@ elif app_file == "ugs":
 elif app_file == "scfapp":
     import scfapp
     scfapp.run_app()
+elif app_file == "nri":
+    import nri
+    nri.run_app()
 
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
