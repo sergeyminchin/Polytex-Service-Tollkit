@@ -37,9 +37,11 @@ def run_app():
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
-                    for col in ["UserID", "CardID"]:
-                        if col in group_df.columns:
-                            group_df[col] = group_df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
+            for col in ["UserID", "CardID"]:
+                if col in group_df.columns:
+            for col in ["UserID", "CardID"]:
+                if col in group_df.columns:
+                    group_df[col] = group_df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
