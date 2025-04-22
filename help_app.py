@@ -19,7 +19,20 @@ Quickly identify when a machine required service again shortly after a previous 
 Upload your service calls report (קריאות שירות) exported from Priority, and the tool will analyze repeated visits per technician. You’ll get a clear summary of how often repeat calls occur, making it easier to track recurring problems and improve service efficiency.
 """)
 
-        elif tool == "📊 Dashboard Q1 2024 VS Q1 2025":
+        elif tool == "📦 Unreturned Items Detector":
+    st.markdown("""
+### 📦 Unreturned Items Detector  
+Find out who dispensed items and didn’t return them — within a selected timeframe.  
+Choose your analysis period (1 week, 1 month, etc.) and get:
+- A sheet with all unreturned items by user
+- A summary sheet with total count
+- A detailed breakdown by item type/subtype
+
+Supports both Excel and CSV exports from the PM8 Transaction Report.  
+✅ Output preserves original ID formatting and includes autofit for readability.
+""")
+
+elif tool == "📊 Dashboard Q1 2024 VS Q1 2025":
             st.markdown("""
 ### 📊 Dashboard Q1 2024 vs Q1 2025  
 Easily compare service trends between Q1 2024 and Q1 2025 side-by-side.
