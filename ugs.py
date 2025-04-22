@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import io
 
-st.set_page_config(page_title="User Group Exporter", layout="centered")
 
 def run_app():
     st.title("📊 Export or Modify Users File")
