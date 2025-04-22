@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
+st.set_page_config(page_title="User Group Exporter", layout="centered")
 
 def run_app():
     st.title("📊 Export or Modify Users File")
@@ -14,7 +15,7 @@ def run_app():
     )
 
     if uploaded_file:
-        df = pd.read_excel(uploaded_file, sheet_name="Users")
+        df = pd.read_excel(uploaded_file, sheet_name='Users')
 
         if mode == "Group and Export":
             filter_option = st.radio(
@@ -23,19 +24,19 @@ def run_app():
             )
 
             if filter_option == "Limit Group + Department":
-                df = df.dropna(subset=["Limit Group", "Department Name"])
-                group_cols = ["Limit Group", "Department Name"]
+                df = df.dropna(subset=['Limit Group', 'Department Name'])
+                group_cols = ['Limit Group', 'Department Name']
             elif filter_option == "Limit Group":
-                df = df.dropna(subset=["Limit Group"])
-                group_cols = ["Limit Group"]
+                df = df.dropna(subset=['Limit Group'])
+                group_cols = ['Limit Group']
             else:
-                df = df.dropna(subset=["Department Name"])
-                group_cols = ["Department Name"]
+                df = df.dropna(subset=['Department Name'])
+                group_cols = ['Department Name']
 
             grouped = df.groupby(group_cols)
 
             output = io.BytesIO()
-            with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
                     for col in ["UserID", "CardID"]:
                         if col in group_df.columns:
@@ -44,12 +45,12 @@ def run_app():
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
                         sheet_name = str(group_keys)[:31]
-                    sheet_name = sheet_name.replace("/", "_").replace("\\", "_").replace(":", "_")
+                    sheet_name = sheet_name.replace('/', '_').replace('\\', '_').replace(':', '_')
                     if len(sheet_name) > 31:
                         sheet_name = sheet_name[:31]
                     group_df.to_excel(writer, sheet_name=sheet_name, index=False)
-                worksheet = writer.sheets[sheet_name]
-                worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
+                    worksheet = writer.sheets[sheet_name]
+                    worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
 
             st.success("✅ Grouped Excel file is ready.")
             st.download_button(
@@ -66,25 +67,25 @@ def run_app():
             )
 
             if modify_option == "Limit Group":
-                original_values = sorted(df["Limit Group"].dropna().unique())
+                original_values = sorted(df['Limit Group'].dropna().unique())
                 selected_value = st.selectbox("Select Limit Group to rename:", original_values)
                 new_value = st.text_input("Enter new Limit Group name:")
                 if new_value:
                     apply_change = st.button("Apply Change")
                     if apply_change:
-                        df.loc[df["Limit Group"] == selected_value, "Limit Group"] = new_value
+                        df.loc[df['Limit Group'] == selected_value, 'Limit Group'] = new_value
 
             elif modify_option == "Department":
-                original_values = sorted(df["Department Name"].dropna().unique())
+                original_values = sorted(df['Department Name'].dropna().unique())
                 selected_value = st.selectbox("Select Department to rename:", original_values)
                 new_value = st.text_input("Enter new Department name:")
                 if new_value:
                     apply_change = st.button("Apply Change")
                     if apply_change:
-                        df.loc[df["Department Name"] == selected_value, "Department Name"] = new_value
+                        df.loc[df['Department Name'] == selected_value, 'Department Name'] = new_value
 
             elif modify_option == "Limit Group + Department":
-                pairs = df[["Limit Group", "Department Name"]].dropna().drop_duplicates()
+                pairs = df[['Limit Group', 'Department Name']].dropna().drop_duplicates()
                 pair_tuples = [tuple(x) for x in pairs.values]
                 selected_pair = st.selectbox("Select pair to rename:", pair_tuples)
                 new_limit = st.text_input("New Limit Group name:", value=selected_pair[0])
@@ -92,21 +93,18 @@ def run_app():
                 if new_limit and new_dept:
                     apply_change = st.button("Apply Change")
                     if apply_change:
-                        df.loc[(df["Limit Group"] == selected_pair[0]) & (df["Department Name"] == selected_pair[1]),
-                               ["Limit Group", "Department Name"]] = [new_limit, new_dept]
+                        df.loc[(df['Limit Group'] == selected_pair[0]) & (df['Department Name'] == selected_pair[1]),
+                               ['Limit Group', 'Department Name']] = [new_limit, new_dept]
 
-            if "apply_change" in locals() and apply_change:
+            if 'apply_change' in locals() and apply_change:
                 for col in ["UserID", "CardID"]:
                     if col in df.columns:
                         df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
-        for col in ["UserID", "CardID"]:
-            if col in df.columns:
-                df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
                 output = io.BytesIO()
-                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-                    df.to_excel(writer, sheet_name="Users", index=False)
-            worksheet = writer.sheets['Users']
-            worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
+                with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                    df.to_excel(writer, sheet_name='Users', index=False)
+                    worksheet = writer.sheets['Users']
+                    worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
 
                 st.success("✅ Modified file is ready.")
                 st.download_button(
