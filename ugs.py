@@ -36,10 +36,10 @@ def run_app():
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
-                    for col in ["UserID", "CardID"]:
-            if col in df.columns:
+                for col in ["UserID", "CardID"]:
+                    if col in df.columns:
+                        df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
                 df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
-                        group_df[col] = group_df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
                         if col in group_df.columns:
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
@@ -98,7 +98,6 @@ def run_app():
 
             if 'apply_change' in locals() and apply_change:
                 for col in ["UserID", "CardID"]:
-                    if col in df.columns:
 
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
