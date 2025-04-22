@@ -97,7 +97,9 @@ def run_app():
                                ['Limit Group', 'Department Name']] = [new_limit, new_dept]
 
             if 'apply_change' in locals() and apply_change:
-                for col in ["UserID", "CardID"]:
+        for col in ["UserID", "CardID"]:
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
 
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
