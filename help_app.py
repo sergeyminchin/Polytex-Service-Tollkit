@@ -9,7 +9,9 @@ def run_app():
         if settings.get("visible", True)
     ]
 
-    st.markdown("Welcome to the **Polytex Service Toolkit** 👋  \nThis guide provides clear explanations for each tool available in the system.\n---")
+    st.markdown("Welcome to the **Polytex Service Toolkit** 👋  
+This guide provides clear explanations for each tool available in the system.
+---")
 
     for tool, _ in sorted_visible_tools:
         if tool == "🔁 Repeated Calls Analyzer":
@@ -20,7 +22,7 @@ Upload your service calls report (קריאות שירות) exported from Priorit
 """)
 
         elif tool == "📦 Unreturned Items Detector":
-    st.markdown("""
+            st.markdown("""
 ### 📦 Unreturned Items Detector  
 Find out who dispensed items and didn’t return them — within a selected timeframe.  
 Choose your analysis period (1 week, 1 month, etc.) and get:
@@ -32,7 +34,7 @@ Supports both Excel and CSV exports from the PM8 Transaction Report.
 ✅ Output preserves original ID formatting and includes autofit for readability.
 """)
 
-elif tool == "📊 Dashboard Q1 2024 VS Q1 2025":
+        elif tool == "📊 Dashboard Q1 2024 VS Q1 2025":
             st.markdown("""
 ### 📊 Dashboard Q1 2024 vs Q1 2025  
 Easily compare service trends between Q1 2024 and Q1 2025 side-by-side.
@@ -131,7 +133,6 @@ Search by:
 
 ✅ Use **System Mapper** first for best accuracy.
 """)
-
 
         elif tool == "👥 User Group Splitter":
             st.markdown("""
