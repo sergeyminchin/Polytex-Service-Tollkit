@@ -23,6 +23,7 @@ app_options = {
     "🧠 System Mapper": "system_mapper_app_final",
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
+    "📦 Unreturned Items Detector": "nri",    # ✅ ADD THIS
     "❓ Help & Guide": "help_app"
 }
 
