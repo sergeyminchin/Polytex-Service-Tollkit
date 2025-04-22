@@ -40,6 +40,10 @@ def run_app():
 
 
             output = io.BytesIO()
+# Ensure UserID and CardID remain as strings
+            for col in ["UserID", "CardID"]:
+                if col in df.columns:
+                    df[col] = df[col].astype(str)
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
                     if isinstance(group_keys, tuple):
