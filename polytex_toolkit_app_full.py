@@ -1,5 +1,11 @@
 
 import streamlit as st
+# Load config from Firestore
+def load_config():
+    doc = db.collection("configs").document("tool_config").get()
+    return doc.to_dict() if doc.exists else {}
+
+# Save config to Firestore
 from PIL import Image
 import json
 from pathlib import Path
@@ -10,30 +16,21 @@ st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", 
 # ===============================
 # 📦 Tool Definitions
 # ===============================
-if "tool_config" not in st.session_state:
-    loaded = load_config()
-    if loaded:
-        st.session_state.tool_config = loaded
-    else:
-        st.session_state.tool_config = {
-            "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
-            "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
-            "📈 Universal Dashboard": {"visible": True, "order": 2},
-            "🧯 Alerts Filtering": {"visible": True, "order": 3},
-            "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
-            "🔧 Fixes per Unit": {"visible": True, "order": 5},
-            "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
-            "📂 Service Distribution Transformer": {"visible": True, "order": 7},
-            "📦 Spare Parts Usage": {"visible": True, "order": 8},
-            "🧠 System Mapper": {"visible": True, "order": 9},
-            "🔎 Service Call Finder": {"visible": True, "order": 10},
-            "👥 User Group Splitter": {"visible": True, "order": 11},
-            "📦 Unreturned Items Detector": {"visible": True, "order": 12},
-            "❓ Help & Guide": {"visible": True, "order": 13}
-        }
-        save_config(st.session_state.tool_config)
-        st.success("✅ Default tool configuration initialized and saved to Firestore!")
-
+app_options = {
+    "🔁 Repeated Calls Analyzer": "repeated_calls",
+    "📊 Dashboard Q1 2024 VS Q1 2025": "dashboard",
+    "📈 Universal Dashboard": "Dashboard_un",
+    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
+    "🔧 Fixes per Unit": "device_fixes_app",
+    "📦 ServiceCalls_SpareParts": "app_final_built_clean",
+    "📂 Service Distribution Transformer": "distribution_transformer_app",
+    "📦 Spare Parts Usage": "parts_dashboard",
+    "🧠 System Mapper": "system_mapper_app_final",
+    "🔎 Service Call Finder": "scfapp",
+    "👥 User Group Splitter": "ugs",
+    "❓ Help & Guide": "help_app"
+}
 
 CONFIG_FILE = Path("visibility_config.json")
 
@@ -49,12 +46,6 @@ key_dict = st.secrets["firestore"]
 credentials = service_account.Credentials.from_service_account_info(key_dict)
 db = firestore.Client(credentials=credentials, project=key_dict["project_id"])
 
-# Load config from Firestore
-def load_config():
-    doc = db.collection("configs").document("tool_config").get()
-    return doc.to_dict() if doc.exists else {}
-
-# Save config to Firestore
 def save_config(config_data):
     db.collection("configs").document("tool_config").set(config_data)
 
@@ -76,6 +67,7 @@ if "tool_config" not in st.session_state:
         "❓ Help & Guide": {"visible": True, "order": 13}
     }
     st.success("✅ Default tool configuration initialized and saved to Firestore!")
+}
 
 # ===============================
 # 🔐 Admin Login
@@ -91,26 +83,40 @@ with st.expander("🔑 Admin Login"):
 
 # ⚠️ Temporary block to initialize Firestore config
 if st.session_state.admin and st.button("🛠️ Initialize Default Tool Config"):
-    default_config = {
-        "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
-        "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
-        "📈 Universal Dashboard": {"visible": True, "order": 2},
-        "🧯 Alerts Filtering": {"visible": True, "order": 3},
-        "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
-        "🔧 Fixes per Unit": {"visible": True, "order": 5},
-        "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
-        "📂 Service Distribution Transformer": {"visible": True, "order": 7},
-        "📦 Spare Parts Usage": {"visible": True, "order": 8},
-        "🧠 System Mapper": {"visible": True, "order": 9},
-        "🔎 Service Call Finder": {"visible": True, "order": 10},
-        "👥 User Group Splitter": {"visible": True, "order": 11},
-        "📦 Unreturned Items Detector": {"visible": True, "order": 12},
-        "❓ Help & Guide": {"visible": True, "order": 13}
-    }
-    save_config(default_config)
-    st.session_state.tool_config = default_config
+    save_config({'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 11}})
+    st.session_state.tool_config = {
+    "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
+    "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
+    "📈 Universal Dashboard": {"visible": True, "order": 2},
+    "🧯 Alerts Filtering": {"visible": True, "order": 3},
+    "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
+    "🔧 Fixes per Unit": {"visible": True, "order": 5},
+    "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
+    "📂 Service Distribution Transformer": {"visible": True, "order": 7},
+    "📦 Spare Parts Usage": {"visible": True, "order": 8},
+    "🧠 System Mapper": {"visible": True, "order": 9},
+    "🔎 Service Call Finder": {"visible": True, "order": 10},
+    "👥 User Group Splitter": {"visible": True, "order": 11},
+    "📦 Unreturned Items Detector": {"visible": True, "order": 12},
+    "❓ Help & Guide": {"visible": True, "order": 13}
+},
+        '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1},
+        '📈 Universal Dashboard': {'visible': True, 'order': 2},
+        '🧯 Alerts Filtering': {'visible': True, 'order': 3},
+        '📦 Duplicates RFID Readings': {'visible': True, 'order': 4},
+        '🔧 Fixes per Unit': {'visible': True, 'order': 5},
+        '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6},
+        '📂 Service Distribution Transformer': {'visible': True, 'order': 7},
+        '📦 Spare Parts Usage': {'visible': True, 'order': 8},
+        '🧠 System Mapper': {'visible': True, 'order': 9},
+        '🔎 Service Call Finder': {'visible': True, 'order': 10},
+        '👥 User Group Splitter': {'visible': True, 'order': 11},
+        '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 13}
+    }: {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 11}}
     st.success("✅ Default tool configuration initialized and saved to Firestore!")
-
 
 
 # ===============================
@@ -182,16 +188,13 @@ elif app_file == "help_app":
     import help_app
     help_app.run_app()
 
+
 elif app_file == "ugs":
     import ugs
     ugs.run_app()
 elif app_file == "scfapp":
     import scfapp
     scfapp.run_app()
-
-elif app_file == "nri":
-    import nri
-    nri.run_app()
 
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
@@ -204,3 +207,6 @@ st.markdown("---")
 st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
 st.markdown("📧 sergeym@polytex.co.il")
 st.markdown("📅 April 2025")
+elif app_file == "nri":
+    import nri
+    nri.run_app()
