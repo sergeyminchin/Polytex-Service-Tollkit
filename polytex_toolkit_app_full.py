@@ -51,6 +51,8 @@ def save_config(config_data):
 
 if "tool_config" not in st.session_state:
     st.session_state.tool_config = load_config()
+    if "👥 User Group Splitter" not in st.session_state.tool_config:
+        st.session_state.tool_config["👥 User Group Splitter"] = {"visible": True, "order": 11}
 
 # ===============================
 # 🔐 Admin Login
