@@ -119,5 +119,17 @@ Search by:
 ✅ Use **System Mapper** first for best accuracy.
 """)
 
+
+        elif tool == "👥 User Group Splitter":
+            st.markdown("""
+### 👥 User Group Splitter  
+Easily manage and export user assignments by department or access group.  
+Two main features:
+1. **Group and Export** – Automatically create a separate sheet for each Limit Group, Department, or a combination of both.
+2. **Modify and Export** – Rename Limit Groups, Departments, or pairings directly from the uploaded Excel and export a clean copy.
+
+📂 Upload the original 'Users' Excel file and choose the option that fits your workflow.
+            """)
+
     st.markdown("""---  
 📧 For questions or support, contact: **sergeym@polytex.co.il**""")
