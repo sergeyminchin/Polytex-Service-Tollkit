@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
+st.set_page_config(page_title="User Group Exporter", layout="centered")
 
 def run_app():
     st.title("📊 Export or Modify Users File")
@@ -38,8 +39,9 @@ def run_app():
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
                     for col in ["UserID", "CardID"]:
+                    df[col] = df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                         if col in group_df.columns:
-                            group_df[col] = df[col].apply(lambda x: f"'{str(x)}'" if pd.notna(x) else "")
+                            group_df[col] = group_df[col].astype(str).str.zfill(group_df[col].astype(str).str.len().max())
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
@@ -97,6 +99,7 @@ def run_app():
 
             if 'apply_change' in locals() and apply_change:
                 for col in ["UserID", "CardID"]:
+                    df[col] = df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                     if col in df.columns:
                         df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
                 output = io.BytesIO()
