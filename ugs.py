@@ -39,7 +39,7 @@ def run_app():
                 for group_keys, group_df in grouped:
                     for col in ["UserID", "CardID"]:
                         if col in group_df.columns:
-                            group_df[col] = group_df[col].astype(str).str.zfill(group_df[col].astype(str).str.len().max())
+                            group_df[col] = df[col].apply(lambda x: f"'{str(x)}'" if pd.notna(x) else "")
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
