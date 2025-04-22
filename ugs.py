@@ -90,7 +90,10 @@ def run_app():
                     apply_change = st.button("Apply Change")
                     if apply_change:
                         df.loc[(df['Limit Group'] == selected_pair[0]) & (df['Department Name'] == selected_pair[1]),
-                               ['Limit Group', 'Department Name']] = [new_limit, new_dept]
+                            ['Limit Group', 'Department Name']] = [new_limit, new_dept]
+
+                if col in df.columns:
+                    df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
 
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -105,9 +108,15 @@ def run_app():
                 file_name="Users_Modified.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
+
 
             if 'apply_change' in locals() and apply_change:
                 for col in ["UserID", "CardID"]:
+                    if col in df.columns:
+                        df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
+
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     df.to_excel(writer, sheet_name='Users', index=False)
