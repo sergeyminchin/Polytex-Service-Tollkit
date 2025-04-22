@@ -13,7 +13,8 @@ def run_app():
     )
 
     if uploaded_file:
-        df = pd.read_excel(uploaded_file, sheet_name='Users')
+        # Preserve leading zeros
+        df = pd.read_excel(uploaded_file, sheet_name='Users', dtype={'UserID': str, 'CardID': str})
 
         if mode == "Group and Export":
             filter_option = st.radio(
@@ -36,10 +37,6 @@ def run_app():
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
-                    for col in ["UserID", "CardID"]:
-                        if col in group_df.columns:
-                            group_df[col] = group_df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
-                    
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
@@ -50,7 +47,8 @@ def run_app():
 
                     group_df.to_excel(writer, sheet_name=sheet_name, index=False)
                     worksheet = writer.sheets[sheet_name]
-                    worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
+                    text_format = writer.book.add_format({'num_format': '@'})
+                    worksheet.set_column('A:Z', None, text_format)
 
             st.success("✅ Grouped Excel file is ready.")
             st.download_button(
@@ -93,19 +91,19 @@ def run_app():
                 if new_limit and new_dept:
                     apply_change = st.button("Apply Change")
                     if apply_change:
-                        df.loc[(df['Limit Group'] == selected_pair[0]) & (df['Department Name'] == selected_pair[1]),
-                               ['Limit Group', 'Department Name']] = [new_limit, new_dept]
+                        df.loc[
+                            (df['Limit Group'] == selected_pair[0]) & 
+                            (df['Department Name'] == selected_pair[1]),
+                            ['Limit Group', 'Department Name']
+                        ] = [new_limit, new_dept]
 
             if 'apply_change' in locals() and apply_change:
-                for col in ["UserID", "CardID"]:
-                    if col in df.columns:
-                        df[col] = df[col].apply(lambda x: f"'{str(x).zfill(6)}" if pd.notna(x) else "")
-
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     df.to_excel(writer, sheet_name='Users', index=False)
                     worksheet = writer.sheets['Users']
-                    worksheet.set_column('A:Z', None, writer.book.add_format({'num_format': '@'}))
+                    text_format = writer.book.add_format({'num_format': '@'})
+                    worksheet.set_column('A:Z', None, text_format)
 
                 st.success("✅ Modified file is ready.")
                 st.download_button(
@@ -114,3 +112,4 @@ def run_app():
                     file_name="Users_Modified.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
