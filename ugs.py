@@ -99,7 +99,7 @@ def run_app():
             if 'apply_change' in locals() and apply_change:
                 for col in ["UserID", "CardID"]:
                     if col in df.columns:
-                        df[col] = df[col].apply(lambda x: f"'{str(x).zfill(10)}" if pd.notna(x) else "")
+                        df[col] = df[col].apply(lambda x: f"'{str(x).zfill(6)}" if pd.notna(x) else "")
 
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
