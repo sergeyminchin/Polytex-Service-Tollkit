@@ -23,7 +23,6 @@ app_options = {
     "🧠 System Mapper": "system_mapper_app_final",
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
-    "📦 Unreturned Items Detector": "nri",
     "❓ Help & Guide": "help_app"
 }
 
@@ -69,8 +68,25 @@ with st.expander("🔑 Admin Login"):
 
 # ⚠️ Temporary block to initialize Firestore config
 if st.session_state.admin and st.button("🛠️ Initialize Default Tool Config"):
-    save_config({'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '❓ Help & Guide': {'visible': True, 'order': 11}})
-    st.session_state.tool_config = {'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '❓ Help & Guide': {'visible': True, 'order': 11}}
+    save_config({'🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 11}})
+    st.session_state.tool_config = {
+        '🔁 Repeated Calls Analyzer': {'visible': True, 'order': 0},
+        '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1},
+        '📈 Universal Dashboard': {'visible': True, 'order': 2},
+        '🧯 Alerts Filtering': {'visible': True, 'order': 3},
+        '📦 Duplicates RFID Readings': {'visible': True, 'order': 4},
+        '🔧 Fixes per Unit': {'visible': True, 'order': 5},
+        '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6},
+        '📂 Service Distribution Transformer': {'visible': True, 'order': 7},
+        '📦 Spare Parts Usage': {'visible': True, 'order': 8},
+        '🧠 System Mapper': {'visible': True, 'order': 9},
+        '🔎 Service Call Finder': {'visible': True, 'order': 10},
+        '👥 User Group Splitter': {'visible': True, 'order': 11},
+        '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 13}
+    }: {'visible': True, 'order': 0}, '📊 Dashboard Q1 2024 VS Q1 2025': {'visible': True, 'order': 1}, '📈 Universal Dashboard': {'visible': True, 'order': 2}, '🧯 Alerts Filtering': {'visible': True, 'order': 3}, '📦 Duplicates RFID Readings': {'visible': True, 'order': 4}, '🔧 Fixes per Unit': {'visible': True, 'order': 5}, '📦 ServiceCalls_SpareParts': {'visible': True, 'order': 6}, '📂 Service Distribution Transformer': {'visible': True, 'order': 7}, '📦 Spare Parts Usage': {'visible': True, 'order': 8}, '🧠 System Mapper': {'visible': True, 'order': 9}, '🔎 Service Call Finder': {'visible': True, 'order': 10}, '📦 Unreturned Items Detector': {'visible': True, 'order': 12},
+        '❓ Help & Guide': {'visible': True, 'order': 11}}
     st.success("✅ Default tool configuration initialized and saved to Firestore!")
 
 
@@ -150,9 +166,6 @@ elif app_file == "ugs":
 elif app_file == "scfapp":
     import scfapp
     scfapp.run_app()
-elif app_file == "nri":
-    import nri
-    nri.run_app()
 
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
@@ -165,3 +178,7 @@ st.markdown("---")
 st.markdown("🧑‍💻 Developed by: **Sergey Minchin** – **Polytex Service Team**")
 st.markdown("📧 sergeym@polytex.co.il")
 st.markdown("📅 April 2025")
+elif app_file == "nri":
+    import nri
+    nri.run_app()
+
