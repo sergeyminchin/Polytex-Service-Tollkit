@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 
+
 def run_app():
     st.title("📊 Export or Modify Users File")
 
@@ -37,12 +38,14 @@ def run_app():
             output = io.BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for group_keys, group_df in grouped:
+                    for col in ["UserID", "CardID"]:
+                        if col in group_df.columns:
+                            group_df[col] = group_df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                 for col in ["UserID", "CardID"]:
                     if col in group_df.columns:
                         group_df[col] = group_df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                     for col in ["UserID", "CardID"]:
                         if col in group_df.columns:
-                            group_df[col] = group_df[col].astype(str).str.zfill(group_df[col].astype(str).str.len().max())
                     if isinstance(group_keys, tuple):
                         sheet_name = "_".join(str(key)[:15] for key in group_keys)
                     else:
@@ -104,7 +107,6 @@ def run_app():
                 df[col] = df[col].apply(lambda x: f"'{str(x)}" if pd.notna(x) else "")
                 for col in ["UserID", "CardID"]:
                     if col in df.columns:
-                        df[col] = df[col].astype(str).str.zfill(df[col].astype(str).str.len().max())
                 output = io.BytesIO()
                 with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                     df.to_excel(writer, sheet_name='Users', index=False)
@@ -118,4 +120,3 @@ def run_app():
                     file_name="Users_Modified.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-            
