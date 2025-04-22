@@ -67,7 +67,6 @@ if "tool_config" not in st.session_state:
         "❓ Help & Guide": {"visible": True, "order": 13}
     }
     st.success("✅ Default tool configuration initialized and saved to Firestore!")
-}
 
 # ===============================
 # 🔐 Admin Login
