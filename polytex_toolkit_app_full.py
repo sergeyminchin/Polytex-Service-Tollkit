@@ -14,7 +14,7 @@ app_options = {
     "🔁 Repeated Calls Analyzer": "repeated_calls",
     "📊 Dashboard Q1 2024 VS Q1 2025": "dashboard",
     "📈 Universal Dashboard": "Dashboard_un",
-    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "🫲 Alerts Filtering": "alerts_analyzer_streamlit",
     "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
     "🔧 Fixes per Unit": "device_fixes_app",
     "📦 ServiceCalls_SpareParts": "app_final_built_clean",
@@ -30,7 +30,7 @@ app_options = {
 
 # 🔁 Ensure missing tools in config also exist in app_options
 default_missing_tools = {
-    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "🫲 Alerts Filtering": "alerts_analyzer_streamlit",
     "🔗 Helpful Links": "helpful_links"
 }
 for tool_name, tool_file in default_missing_tools.items():
@@ -77,7 +77,7 @@ if "tool_config" not in st.session_state:
             "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
             "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
             "📈 Universal Dashboard": {"visible": True, "order": 2},
-            "🧯 Alerts Filtering": {"visible": True, "order": 3},
+            "🫲 Alerts Filtering": {"visible": True, "order": 3},
             "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
             "🔧 Fixes per Unit": {"visible": True, "order": 5},
             "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
@@ -174,11 +174,24 @@ elif app_file == "nri":
 elif app_file == "helpful_links":
     st.subheader("🔗 Helpful Links")
     st.markdown("Here are some useful resources for the service team:")
-    st.markdown("""
-    - [🌐 Polytex Manager (PM8)](https://pm8.polytex.cloud/)
-    - [📦 Priority ERP](https://p.priority-connect.online/webui/P009W/#)
-    - [🧠 Senior Expert (ChatGPT)](https://chatgpt.com/)
-    """)
+
+    st.markdown(
+        f"""<p style='font-size:18px'>
+        <img src='politex.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+        <a href='https://pm8.polytex.cloud/' target='_blank' style='text-decoration:none;'>Polytex Manager (PM8)</a>
+        </p>""",
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        f"""<p style='font-size:18px'>
+        <img src='priority.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+        <a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='text-decoration:none;'>Priority ERP</a>
+        </p>""",
+        unsafe_allow_html=True
+    )
+
+    st.markdown("### 🧠 [Senior Expert (ChatGPT)](https://chatgpt.com/)")
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
         exec(f.read(), globals())
