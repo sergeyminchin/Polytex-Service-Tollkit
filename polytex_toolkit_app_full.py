@@ -199,17 +199,12 @@ elif app_file == "helpful_links":
        st.markdown("""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#003666;'>Priority ERP</a>""", unsafe_allow_html=True)
 
     # ChatGPT as a button
-    st.markdown("---")
-    st.markdown(
-        f"""<div style='text-align:center;'>
-        <a href='https://chatgpt.com/' target='_blank'>
-            <button style='padding:10px 20px; font-size:24px; border:none; background-color:#003666; color:white; border-radius:8px; cursor:pointer;'>
-                🧠 Senior Expert 
-            </button>
-        </a>
-        </div>""",
-        unsafe_allow_html=True
-    )
+    cols = st.columns([1, 10])
+    with cols[0]:
+        st.image("ChatGPT.png", width=180)
+    with cols[1]:
+       st.markdown("""<a href='https://chatgpt.com/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#003666;'>Senior Expert</a>""", unsafe_allow_html=True)
+
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
         exec(f.read(), globals())
