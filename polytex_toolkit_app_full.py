@@ -175,23 +175,38 @@ elif app_file == "helpful_links":
     st.subheader("🔗 Helpful Links")
     st.markdown("Here are some useful resources for the service team:")
 
+    # Polytex Manager (PM8) with icon
     st.markdown(
-        f"""<p style='font-size:18px'>
-        <img src='politex.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
-        <a href='https://pm8.polytex.cloud/' target='_blank' style='text-decoration:none;'>Polytex Manager (PM8)</a>
-        </p>""",
+        f"""<a href='https://pm8.polytex.cloud/' target='_blank' style='text-decoration:none;'>
+        <p style='font-size:18px'>
+            <img src='politex.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+            Polytex Manager (PM8)
+        </p></a>""",
         unsafe_allow_html=True
     )
 
+    # Priority ERP with icon
     st.markdown(
-        f"""<p style='font-size:18px'>
-        <img src='priority.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
-        <a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='text-decoration:none;'>Priority ERP</a>
-        </p>""",
+        f"""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='text-decoration:none;'>
+        <p style='font-size:18px'>
+            <img src='priority.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+            Priority ERP
+        </p></a>""",
         unsafe_allow_html=True
     )
 
-    st.markdown("### 🧠 [Senior Expert (ChatGPT)](https://chatgpt.com/)")
+    # Senior Expert as a button
+    st.markdown("---")
+    st.markdown(
+        f"""<div style='text-align:center;'>
+        <a href='https://chatgpt.com/' target='_blank'>
+            <button style='padding:10px 20px; font-size:16px; border:none; background-color:#5c6bc0; color:white; border-radius:8px; cursor:pointer;'>
+                🧠 Open Senior Expert (ChatGPT)
+            </button>
+        </a>
+        </div>""",
+        unsafe_allow_html=True
+    )
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
         exec(f.read(), globals())
