@@ -185,7 +185,7 @@ elif app_file == "helpful_links":
         st.image("politex.png", width=320)
     with cols[1]:
         st.markdown(
-    """<a href='https://pm8.polytex.cloud/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:##003666;'>
+    """<a href='https://pm8.polytex.cloud/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#003666;'>
     Polytex Manager (PM8)
     </a>""",
     unsafe_allow_html=True
