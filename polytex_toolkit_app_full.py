@@ -179,7 +179,7 @@ elif app_file == "helpful_links":
     st.markdown(
         f"""<a href='https://pm8.polytex.cloud/' target='_blank' style='text-decoration:none;'>
         <p style='font-size:18px'>
-            <img src='politex.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+            <img src='politex.png' width='20' style='vertical-align:middle; margin-right:8px;'>
             Polytex Manager (PM8)
         </p></a>""",
         unsafe_allow_html=True
@@ -189,7 +189,7 @@ elif app_file == "helpful_links":
     st.markdown(
         f"""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='text-decoration:none;'>
         <p style='font-size:18px'>
-            <img src='priority.ico' width='20' style='vertical-align:middle; margin-right:8px;'>
+            <img src='priority.png' width='20' style='vertical-align:middle; margin-right:8px;'>
             Priority ERP
         </p></a>""",
         unsafe_allow_html=True
