@@ -4,25 +4,37 @@ import io
 from datetime import datetime, timedelta
 
 
-def get_unreturned_items(df: pd.DataFrame, days: int) -> pd.DataFrame:
-    df = df.copy()
-
-    # Normalize columns
-    df = df.rename(columns={
+def normalize_columns(df):
+    column_map = {
+        # Common mappings across xlsx/csv
         "Created Date": "CreatedDate",
+        "CreatedDate": "CreatedDate",
         "Card ID": "CardId",
+        "CardId": "CardId",
+        "RFID Tag": "RFID",
+        "RFID": "RFID",
         "Transaction Type ID": "TransactionType",
-        "RFID Tag": "RFID"
-    })
+        "TransactionInfoTypeName": "TransactionType",
+        "User Full Name": "UserName",
+        "UserName": "UserName",
+        "Item Type Name": "ItemTypeName",
+        "ItemTypeName": "ItemTypeName",
+        "Item Sub Type Name": "ItemSubTypeName",
+        "ItemSubTypeName": "ItemSubTypeName"
+    }
+    df = df.rename(columns={col: column_map.get(col, col) for col in df.columns})
+    return df
 
+
+def get_unreturned_items(df: pd.DataFrame, days: int) -> pd.DataFrame:
+    df = normalize_columns(df)
     df["CreatedDate"] = pd.to_datetime(df["CreatedDate"], errors="coerce")
     df = df.dropna(subset=["CreatedDate", "RFID", "TransactionType"])
 
-    # Last transaction per RFID
     latest = df.sort_values("CreatedDate").groupby("RFID", as_index=False).last()
     cutoff = pd.Timestamp.now() - pd.Timedelta(days=days)
 
-    # Treat 'Delivery' as equivalent to 'Dispense'
+    # Treat 'Delivery' as 'Dispense'
     unreturned = latest[
         (latest["TransactionType"].str.lower() == "delivery") &
         (latest["CreatedDate"] < cutoff)
@@ -54,18 +66,22 @@ def run_app():
 
         unreturned = get_unreturned_items(df, days)
 
-        summary = unreturned.groupby(["Item Type", "Item Sub Type"], dropna=False).size().reset_index(name="Count")
+        summary = unreturned.groupby(["ItemTypeName", "ItemSubTypeName"], dropna=False).size().reset_index(name="Count")
         summary.loc[:, "Analysis Period"] = f"> {days} days"
 
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
-            unreturned.to_excel(writer, sheet_name="Unreturned", index=False)
+            # Save unreturned sheet with selected columns
+            cols_to_include = [col for col in [
+                "RFID", "CardId", "UserName", "ItemTypeName", "ItemSubTypeName", "CreatedDate", "TransactionType"
+            ] if col in unreturned.columns]
+            unreturned[cols_to_include].to_excel(writer, sheet_name="Unreturned", index=False)
             summary.to_excel(writer, sheet_name="Summary", index=False)
 
-            # Auto-fit columns for both sheets
+            # Auto-fit columns
             for sheet_name in writer.sheets:
                 worksheet = writer.sheets[sheet_name]
-                df_to_use = unreturned if sheet_name == "Unreturned" else summary
+                df_to_use = unreturned[cols_to_include] if sheet_name == "Unreturned" else summary
                 for idx, col in enumerate(df_to_use.columns):
                     max_len = max([len(str(x)) for x in df_to_use[col].astype(str).values] + [len(col)]) + 2
                     worksheet.set_column(idx, idx, max_len)
