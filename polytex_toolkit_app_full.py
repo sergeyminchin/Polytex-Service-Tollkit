@@ -5,10 +5,7 @@ from streamlit_sortables import sort_items
 from google.oauth2 import service_account
 from google.cloud import firestore
 
-st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
-# DEBUG: Ensure Helpful Links is visible (temporary fix)
-if "🔗 Helpful Links" not in st.session_state.tool_config:
-    st.session_state.tool_config["🔗 Helpful Links"] = {"visible": True, "order": 14}
+
 # ===============================
 # 📦 Tool Definitions
 # ===============================
