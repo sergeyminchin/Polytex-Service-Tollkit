@@ -134,7 +134,7 @@ st.markdown("<h1 style='font-size: 58px;'>🛠️ Polytex Service Toolkit</h1>",
 visible_tools = {
     tool: app_options[tool]
     for tool, settings in sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
-    if settings["visible"]
+    if settings["visible"] and tool in app_options
 }
 
 if not visible_tools:
