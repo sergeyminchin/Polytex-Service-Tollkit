@@ -14,7 +14,7 @@ app_options = {
     "🔁 Repeated Calls Analyzer": "repeated_calls",
     "📊 Dashboard Q1 2024 VS Q1 2025": "dashboard",
     "📈 Universal Dashboard": "Dashboard_un",
-    "🫲 Alerts Filtering": "alerts_analyzer_streamlit",
+    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
     "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
     "🔧 Fixes per Unit": "device_fixes_app",
     "📦 ServiceCalls_SpareParts": "app_final_built_clean",
@@ -29,8 +29,12 @@ app_options = {
 }
 
 # 🔁 Ensure missing tools in config also exist in app_options
+# Clean duplicate/typo entries
+if "🫲 Alerts Filtering" in st.session_state.get("tool_config", {}):
+    del st.session_state.tool_config["🫲 Alerts Filtering"]
+
 default_missing_tools = {
-    "🫲 Alerts Filtering": "alerts_analyzer_streamlit",
+    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
     "🔗 Helpful Links": "helpful_links"
 }
 for tool_name, tool_file in default_missing_tools.items():
@@ -178,14 +182,14 @@ elif app_file == "helpful_links":
     # Polytex Manager (PM8)
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("politex.png", width=320)
+        st.image("politex.png", width=24)
     with cols[1]:
         st.markdown("[Polytex Manager (PM8)](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
 
     # Priority ERP
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("priority.png", width=320)
+        st.image("priority.png", width=24)
     with cols[1]:
         st.markdown("[Priority ERP](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
 
