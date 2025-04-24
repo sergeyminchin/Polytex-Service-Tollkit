@@ -194,7 +194,7 @@ elif app_file == "helpful_links":
     # Priority ERP
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("priority.png", width=320)
+        st.image("priority.png", width=180)
     with cols[1]:
        st.markdown("""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#003666;'>Priority ERP</a>""", unsafe_allow_html=True)
 
