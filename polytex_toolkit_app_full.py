@@ -185,7 +185,7 @@ elif app_file == "helpful_links":
         st.image("politex.png", width=320)
     with cols[1]:
         st.markdown(
-    """<a href='https://pm8.polytex.cloud/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#3366cc;'>
+    """<a href='https://pm8.polytex.cloud/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:##003666;'>
     Polytex Manager (PM8)
     </a>""",
     unsafe_allow_html=True
@@ -196,14 +196,14 @@ elif app_file == "helpful_links":
     with cols[0]:
         st.image("priority.png", width=320)
     with cols[1]:
-       st.markdown("""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#042c64;'>Priority ERP</a>""", unsafe_allow_html=True)
+       st.markdown("""<a href='https://p.priority-connect.online/webui/P009W/#' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#003666;'>Priority ERP</a>""", unsafe_allow_html=True)
 
     # ChatGPT as a button
     st.markdown("---")
     st.markdown(
         f"""<div style='text-align:center;'>
         <a href='https://chatgpt.com/' target='_blank'>
-            <button style='padding:10px 20px; font-size:24px; border:none; background-color:#f46c04; color:white; border-radius:8px; cursor:pointer;'>
+            <button style='padding:10px 20px; font-size:24px; border:none; background-color:#003666; color:white; border-radius:8px; cursor:pointer;'>
                 🧠 Senior Expert 
             </button>
         </a>
