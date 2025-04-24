@@ -178,14 +178,14 @@ elif app_file == "helpful_links":
     # Polytex Manager (PM8)
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("politex.png", width=60)
+        st.image("politex.png", width=40)
     with cols[1]:
         st.markdown("[Polytex Manager (PM8)](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
 
     # Priority ERP
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("priority.png", width=60)
+        st.image("priority.png", width=80)
     with cols[1]:
         st.markdown("[Priority ERP](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
 
