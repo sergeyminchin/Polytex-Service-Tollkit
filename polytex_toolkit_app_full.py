@@ -117,7 +117,7 @@ if st.session_state.admin:
         new_val = st.checkbox(tool, value=current_val, key=f"vis_{tool}")
         if new_val != current_val:
             st.session_state.tool_config[tool]["visible"] = new_val
-    if st.button("📅 Save Tool Configuration"):
+    if st.button("💾 Save Tool Configuration"):
         save_config(st.session_state.tool_config)
         st.success("✅ Settings saved to Firestore!")
 
@@ -182,14 +182,14 @@ elif app_file == "helpful_links":
     # Polytex Manager (PM8)
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("politex.png", width=24)
+        st.image("politex.png", width=320)
     with cols[1]:
         st.markdown("[Polytex Manager (PM8)](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
 
     # Priority ERP
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("priority.png", width=24)
+        st.image("priority.png", width=320)
     with cols[1]:
         st.markdown("[Priority ERP](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
 
