@@ -184,7 +184,7 @@ elif app_file == "helpful_links":
     with cols[0]:
         st.image("politex.png", width=320)
     with cols[1]:
-        st.markdown("[Polytex Manager (PM8)](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
+        st.markdown("[**Polytex Manager (PM8)**](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
 
     # Priority ERP
     cols = st.columns([1, 10])
