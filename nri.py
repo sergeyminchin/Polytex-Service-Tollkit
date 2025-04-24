@@ -6,16 +6,25 @@ from datetime import datetime, timedelta
 
 def get_unreturned_items(df: pd.DataFrame, days: int) -> pd.DataFrame:
     df = df.copy()
-    df["CreatedDate"] = pd.to_datetime(df["CreatedDate"], errors="coerce")
-    df = df.dropna(subset=["CardId", "CreatedDate", "TransactionInfoTypeName"])
 
-    # Get the last transaction per CardId (RFID)
-    latest = df.sort_values("CreatedDate").groupby("CardId", as_index=False).last()
+    # Normalize columns
+    df = df.rename(columns={
+        "Created Date": "CreatedDate",
+        "Card ID": "CardId",
+        "Transaction Type ID": "TransactionType",
+        "RFID Tag": "RFID"
+    })
+
+    df["CreatedDate"] = pd.to_datetime(df["CreatedDate"], errors="coerce")
+    df = df.dropna(subset=["CreatedDate", "RFID", "TransactionType"])
+
+    # Last transaction per RFID
+    latest = df.sort_values("CreatedDate").groupby("RFID", as_index=False).last()
     cutoff = pd.Timestamp.now() - pd.Timedelta(days=days)
 
-    # Only those still marked Dispensed and older than cutoff
+    # Treat 'Delivery' as equivalent to 'Dispense'
     unreturned = latest[
-        (latest["TransactionInfoTypeName"].str.lower() == "dispensed") &
+        (latest["TransactionType"].str.lower() == "delivery") &
         (latest["CreatedDate"] < cutoff)
     ]
     return unreturned
@@ -45,22 +54,20 @@ def run_app():
 
         unreturned = get_unreturned_items(df, days)
 
-        summary = unreturned.groupby(["ItemTypeName", "ItemSubTypeName"]).size().reset_index(name="Count")
-        summary_sheet = summary.copy()
-        summary_sheet.loc[:, "Analysis Period"] = f"> {days} days"
+        summary = unreturned.groupby(["Item Type", "Item Sub Type"], dropna=False).size().reset_index(name="Count")
+        summary.loc[:, "Analysis Period"] = f"> {days} days"
 
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
             unreturned.to_excel(writer, sheet_name="Unreturned", index=False)
-            summary_sheet.to_excel(writer, sheet_name="Summary", index=False)
+            summary.to_excel(writer, sheet_name="Summary", index=False)
 
-            # Auto-fit column widths
-            for sheet in writer.sheets.values():
-                worksheet = sheet
-                for idx, col in enumerate(unreturned.columns):
-                    max_len = max(
-                        [len(str(val)) for val in unreturned[col].values] + [len(col)]
-                    ) + 1
+            # Auto-fit columns for both sheets
+            for sheet_name in writer.sheets:
+                worksheet = writer.sheets[sheet_name]
+                df_to_use = unreturned if sheet_name == "Unreturned" else summary
+                for idx, col in enumerate(df_to_use.columns):
+                    max_len = max([len(str(x)) for x in df_to_use[col].astype(str).values] + [len(col)]) + 2
                     worksheet.set_column(idx, idx, max_len)
 
         st.success(f"✅ Found {len(unreturned)} unreturned items older than {days} days.")
