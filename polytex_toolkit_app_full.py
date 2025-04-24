@@ -14,7 +14,7 @@ app_options = {
     "🔁 Repeated Calls Analyzer": "repeated_calls",
     "📊 Dashboard Q1 2024 VS Q1 2025": "dashboard",
     "📈 Universal Dashboard": "Dashboard_un",
-    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "🫲 Alerts Filtering": "alerts_analyzer_streamlit",
     "📦 Duplicates RFID Readings": "rfid_analysis_streamlit",
     "🔧 Fixes per Unit": "device_fixes_app",
     "📦 ServiceCalls_SpareParts": "app_final_built_clean",
@@ -24,7 +24,8 @@ app_options = {
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
     "📦 Unreturned Items Detector": "nri",
-    "❓ Help & Guide": "help_app"
+    "❓ Help & Guide": "help_app",
+    "🔗 Helpful Links": "helpful_links"
 }
 
 # ===============================
@@ -65,7 +66,7 @@ if "tool_config" not in st.session_state:
             "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
             "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
             "📈 Universal Dashboard": {"visible": True, "order": 2},
-            "🧯 Alerts Filtering": {"visible": True, "order": 3},
+            "🫲 Alerts Filtering": {"visible": True, "order": 3},
             "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
             "🔧 Fixes per Unit": {"visible": True, "order": 5},
             "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
@@ -75,7 +76,8 @@ if "tool_config" not in st.session_state:
             "🔎 Service Call Finder": {"visible": True, "order": 10},
             "👥 User Group Splitter": {"visible": True, "order": 11},
             "📦 Unreturned Items Detector": {"visible": True, "order": 12},
-            "❓ Help & Guide": {"visible": True, "order": 13}
+            "❓ Help & Guide": {"visible": True, "order": 13},
+            "🔗 Helpful Links": {"visible": True, "order": 14}
         }
         st.session_state.tool_config = default_config
         save_config(default_config)
@@ -100,7 +102,7 @@ if st.session_state.admin:
         new_val = st.checkbox(tool, value=current_val, key=f"vis_{tool}")
         if new_val != current_val:
             st.session_state.tool_config[tool]["visible"] = new_val
-    if st.button("💾 Save Tool Configuration"):
+    if st.button("📅 Save Tool Configuration"):
         save_config(st.session_state.tool_config)
         st.success("✅ Settings saved to Firestore!")
 
@@ -158,6 +160,14 @@ elif app_file == "scfapp":
 elif app_file == "nri":
     import nri
     nri.run_app()
+elif app_file == "helpful_links":
+    st.subheader("🔗 Helpful Links")
+    st.markdown("Here are some useful resources for the service team:")
+    st.markdown("""
+    - [🌐 Polytex Manager (PM8)](https://pm8.polytex.cloud/)
+    - [📦 Priority ERP](https://p.priority-connect.online/webui/P009W/#)
+    - [🧠 Senior Expert (ChatGPT)](https://chatgpt.com/)
+    """)
 else:
     with open(f"{app_file}.py", "r", encoding="utf-8") as f:
         exec(f.read(), globals())
