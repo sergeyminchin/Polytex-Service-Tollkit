@@ -191,7 +191,7 @@ elif app_file == "helpful_links":
     with cols[0]:
         st.image("priority.png", width=320)
     with cols[1]:
-        st.markdown("[Priority ERP](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
+        st.markdown("[***Priority ERP***](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
 
     # ChatGPT as a button
     st.markdown("---")
