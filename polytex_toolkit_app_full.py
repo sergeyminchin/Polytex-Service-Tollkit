@@ -120,6 +120,10 @@ st.markdown("<h1 style='font-size: 58px;'>🛠️ Polytex Service Toolkit</h1>",
 # ===============================
 # 📋 Filter and Sort Tools for Menu
 # ===============================
+# Ensure Helpful Links is in tool_config
+if "🔗 Helpful Links" not in st.session_state.tool_config:
+    st.session_state.tool_config["🔗 Helpful Links"] = {"visible": True, "order": 14}
+
 visible_tools = {
     tool: app_options[tool]
     for tool, settings in sorted(st.session_state.tool_config.items(), key=lambda x: x[1]["order"])
