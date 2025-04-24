@@ -194,7 +194,7 @@ elif app_file == "helpful_links":
     st.markdown(
         f"""<div style='text-align:center;'>
         <a href='https://chatgpt.com/' target='_blank'>
-            <button style='padding:10px 20px; font-size:20px; border:none; background-color:#05294b; color:white; border-radius:8px; cursor:pointer;'>
+            <button style='padding:10px 20px; font-size:20px; border:none; background-color:#f46c04; color:white; border-radius:8px; cursor:pointer;'>
                 🧠 Senior Expert 
             </button>
         </a>
