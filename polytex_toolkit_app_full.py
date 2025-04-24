@@ -77,7 +77,7 @@ if "tool_config" not in st.session_state:
             "🔁 Repeated Calls Analyzer": {"visible": True, "order": 0},
             "📊 Dashboard Q1 2024 VS Q1 2025": {"visible": True, "order": 1},
             "📈 Universal Dashboard": {"visible": True, "order": 2},
-            "🫲 Alerts Filtering": {"visible": True, "order": 3},
+            "🧯 Alerts Filtering": {"visible": True, "order": 3},
             "📦 Duplicates RFID Readings": {"visible": True, "order": 4},
             "🔧 Fixes per Unit": {"visible": True, "order": 5},
             "📦 ServiceCalls_SpareParts": {"visible": True, "order": 6},
@@ -178,7 +178,7 @@ elif app_file == "helpful_links":
     # Polytex Manager (PM8)
     cols = st.columns([1, 10])
     with cols[0]:
-        st.image("politex.png", width=150)
+        st.image("politex.png", width=320)
     with cols[1]:
         st.markdown("[Polytex Manager (PM8)](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
 
@@ -194,7 +194,7 @@ elif app_file == "helpful_links":
     st.markdown(
         f"""<div style='text-align:center;'>
         <a href='https://chatgpt.com/' target='_blank'>
-            <button style='padding:10px 20px; font-size:20px; border:none; background-color:#f46c04; color:white; border-radius:8px; cursor:pointer;'>
+            <button style='padding:10px 20px; font-size:24px; border:none; background-color:#f46c04; color:white; border-radius:8px; cursor:pointer;'>
                 🧠 Senior Expert 
             </button>
         </a>
