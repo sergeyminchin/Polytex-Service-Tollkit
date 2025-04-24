@@ -184,14 +184,19 @@ elif app_file == "helpful_links":
     with cols[0]:
         st.image("politex.png", width=320)
     with cols[1]:
-        st.markdown("[**Polytex Manager (PM8)**](https://pm8.polytex.cloud/)", unsafe_allow_html=True)
+        st.markdown(
+    """<a href='https://pm8.polytex.cloud/' target='_blank' style='font-size:20px; font-weight:bold; text-decoration:none; color:#3366cc;'>
+    Polytex Manager (PM8)
+    </a>""",
+    unsafe_allow_html=True
+)
 
     # Priority ERP
     cols = st.columns([1, 10])
     with cols[0]:
         st.image("priority.png", width=320)
     with cols[1]:
-        st.markdown("[***Priority ERP***](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
+        st.markdown("[**Priority ERP**](https://p.priority-connect.online/webui/P009W/#)", unsafe_allow_html=True)
 
     # ChatGPT as a button
     st.markdown("---")
