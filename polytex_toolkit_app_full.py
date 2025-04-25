@@ -35,7 +35,7 @@ if "🫲 Alerts Filtering" in st.session_state.get("tool_config", {}):
     del st.session_state.tool_config["🫲 Alerts Filtering"]
 
 default_missing_tools = {
-    "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
+    "📈 Machine Report Generator": "machine_report",
     "🔗 Helpful Links": "helpful_links"
 }
 for tool_name, tool_file in default_missing_tools.items():
