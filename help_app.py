@@ -139,6 +139,26 @@ Two modes:
 - Group and Export (by Department / Limit Group)
 - Modify and Export (rename and export updated file)
 """)
+        elif tool == "📈 Machine Report Generator":
+            st.markdown("""
+### 📈 Machine Report Generator  
+Generate a full Excel report showing which machines had the most service calls, and analyze what happened.
+
+🧾 Upload:
+- קריאות שירות (Service Calls)
+- חלקים שדווחו בקריאות (Spare Parts Used in Calls)
+
+📊 For each machine:
+- Total number of calls
+- Site name
+- Breakdown of call types
+- List of fault descriptions and actions
+- All spare parts replaced, including quantity
+
+🧭 Click any machine in the summary tab to jump to its detailed page.  
+🔁 Each sheet has a link to return to the summary.
+""")
+
 
     st.markdown("""---  
 📧 Contact support: **sergeym@polytex.co.il**""")
