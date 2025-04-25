@@ -24,6 +24,7 @@ app_options = {
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
     "📦 Unreturned Items Detector": "nri",
+    "📈 Machine Report Generator": "machine_report",
     "❓ Help & Guide": "help_app",
     "🔗 Helpful Links": "helpful_links"
 }
@@ -92,7 +93,8 @@ if "tool_config" not in st.session_state:
             "👥 User Group Splitter": {"visible": True, "order": 11},
             "📦 Unreturned Items Detector": {"visible": True, "order": 12},
             "❓ Help & Guide": {"visible": True, "order": 13},
-            "🔗 Helpful Links": {"visible": True, "order": 14}
+            "🔗 Helpful Links": {"visible": True, "order": 14},
+            "📈 Machine Report Generator": {"visible": True, "order": 15}
         }
         st.session_state.tool_config = default_config
         save_config(default_config)
@@ -175,6 +177,10 @@ elif app_file == "scfapp":
 elif app_file == "nri":
     import nri
     nri.run_app()
+
+elif app_file == "machine_report":
+    import machine_report
+
 elif app_file == "helpful_links":
     st.subheader("🔗 Helpful Links")
     st.markdown("Here are some useful resources for the service team:")
