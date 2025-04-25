@@ -37,7 +37,7 @@ if "🫲 Alerts Filtering" in st.session_state.get("tool_config", {}):
 default_missing_tools = {
     "🧯 Alerts Filtering": "alerts_analyzer_streamlit",
     "🔗 Helpful Links": "helpful_links"
-
+}
 for tool_name, tool_file in default_missing_tools.items():
     if tool_name not in app_options:
         app_options[tool_name] = tool_file
