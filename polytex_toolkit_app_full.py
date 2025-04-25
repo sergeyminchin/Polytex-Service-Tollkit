@@ -24,7 +24,7 @@ app_options = {
     "🔎 Service Call Finder": "scfapp",
     "👥 User Group Splitter": "ugs",
     "📦 Unreturned Items Detector": "nri",
-    "📈 Machine Report Generator": "machine_report",
+    "🔧 Machine Report Generator": "machine_report",
     "❓ Help & Guide": "help_app",
     "🔗 Helpful Links": "helpful_links"
 }
@@ -35,7 +35,7 @@ if "🫲 Alerts Filtering" in st.session_state.get("tool_config", {}):
     del st.session_state.tool_config["🫲 Alerts Filtering"]
 
 default_missing_tools = {
-    "📈 Machine Report Generator": "machine_report",
+    "🔧 Machine Report Generator": "machine_report",
     "🔗 Helpful Links": "helpful_links"
 }
 for tool_name, tool_file in default_missing_tools.items():
@@ -94,7 +94,7 @@ if "tool_config" not in st.session_state:
             "📦 Unreturned Items Detector": {"visible": True, "order": 12},
             "❓ Help & Guide": {"visible": True, "order": 13},
             "🔗 Helpful Links": {"visible": True, "order": 14},
-            "📈 Machine Report Generator": {"visible": True, "order": 15}
+            "🔧 Machine Report Generator": {"visible": True, "order": 15}
         }
         st.session_state.tool_config = default_config
         save_config(default_config)
