@@ -180,6 +180,7 @@ elif app_file == "nri":
 
 elif app_file == "machine_report":
     import machine_report
+    machine_report.run_app()
 
 elif app_file == "helpful_links":
     st.subheader("🔗 Helpful Links")
