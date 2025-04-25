@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-st.title("📈 דוח מכונות לפי כמות קריאות שירות")
+st.title("🔧 דוח מכונות לפי כמות קריאות שירות")
 def run_app():
     st.write("העלו שני קבצים ובחרו טווח תאריכים או הפיקו את הדוח לכל התקופה")
 
