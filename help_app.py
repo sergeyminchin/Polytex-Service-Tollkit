@@ -139,7 +139,7 @@ Two modes:
 - Group and Export (by Department / Limit Group)
 - Modify and Export (rename and export updated file)
 """)
-        elif tool == "📈 Machine Report Generator":
+        elif tool == "🔧 Machine Report Generator":
             st.markdown("""
 ### 📈 Machine Report Generator  
 Generate a full Excel report showing which machines had the most service calls, and analyze what happened.
