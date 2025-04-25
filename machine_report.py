@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# Title and instructions
-st.title("דוח מכונות לפי כמות קריאות שירות🔧")
-st.write("העלו שני קבצים ובחרו טווח תאריכים או הפיקו את הדוח לכל התקופה")
+def run_app():
+    st.title("📈 דוח מכונות לפי כמות קריאות שירות")
+    st.write("העלו שני קבצים ובחרו טווח תאריכים או הפיקו את הדוח לכל התקופה")
 
 # File uploaders
 calls_file = st.file_uploader("העלה את קובץ הקריאות", type=['xlsx'])
