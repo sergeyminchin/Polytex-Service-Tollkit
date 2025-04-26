@@ -19,8 +19,8 @@ def run_app():
             end_date = st.date_input("תאריך סיום")
 
     if calls_df.empty:
-    st.warning("❗ לא נמצאו קריאות שירות בטווח התאריכים שנבחר. אנא נסה טווח אחר.")
-    return
+        st.warning("❗ לא נמצאו קריאות שירות בטווח התאריכים שנבחר. אנא נסה טווח אחר.")
+        return
 
 
     if st.button("📊 הפק דוח"):
