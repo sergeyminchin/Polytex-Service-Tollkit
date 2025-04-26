@@ -81,7 +81,7 @@ def run_app():
                 worksheet.write_url('A1', "internal:'Summary'!A1", string="🔙 חזרה לטאב Summary")
 
                 worksheet.write('A3', 'אתר:', bold_format)
-                worksheet.write('B3', site_name)
+                worksheet.write('B3', site_name, bold_format)
 
                 worksheet.write('A5', 'סוג קריאה וכמות:', bold_format)
                 for idx, (ct, count) in enumerate(call_types.values):
