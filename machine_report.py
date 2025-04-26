@@ -80,7 +80,7 @@ def run_app():
                 if header == 'Site Name':
                     summary_sheet.set_column(col_num, col_num, len(header) + 30)
                 else:
-                    summary_sheet.set_column(col_num, col_num, len(header) + 10)
+                    summary_sheet.set_column(col_num, col_num, len(header) + 5)
 
 
             # === Machine Tabs ===
@@ -125,7 +125,7 @@ def run_app():
                     for i, col in enumerate(df.columns):
                         try:
                             col_len = max(df[col].astype(str).map(len).max(), len(str(col)))
-                            worksheet.set_column(i, i, col_len + 5)
+                            worksheet.set_column(i, i, col_len + 15)
                         except:
                             pass
 
