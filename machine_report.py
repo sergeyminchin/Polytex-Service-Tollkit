@@ -2,6 +2,26 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
+# 🛠 HELPER FUNCTIONS
+def autofit_columns(worksheet, dataframe, padding=5):
+    for i, col in enumerate(dataframe.columns):
+        try:
+            max_length = max(
+                dataframe[col].astype(str).map(len).max(),
+                len(str(col))
+            )
+            worksheet.set_column(i, i, max_length + padding)
+        except Exception:
+            pass
+
+def write_simple_table(worksheet, start_row, title, dataframe, writer):
+    bold_format = writer.book.add_format({'bold': True})
+    worksheet.write(start_row, 0, title, bold_format)
+    dataframe.to_excel(writer, sheet_name=worksheet.name, startrow=start_row + 1, index=False)
+    autofit_columns(worksheet, dataframe)
+    return start_row + len(dataframe) + 3
+
+# 💻 MAIN APP
 def run_app():
     st.title("🔧 Machines Report by Number of Service Calls")
     st.write("Upload two files and optionally filter by date range to generate the full report.")
@@ -19,7 +39,7 @@ def run_app():
         # Available dates
         min_date = calls_df['ת. פתיחה'].min()
         max_date = calls_df['ת. פתיחה'].max()
-        st.info(f"📅 Dates in Calls File: From {min_date.date()} to {max_date.date()}")
+        st.info(f"🗕️ Dates in Calls File: From {min_date.date()} to {max_date.date()}")
 
         # Date filter
         filter_dates = st.checkbox("Filter by Date Range", value=True)
@@ -34,19 +54,13 @@ def run_app():
             start_date = pd.to_datetime(start_date)
             end_date = pd.to_datetime(end_date)
 
-            # Filter
-            calls_df = calls_df[
-                (calls_df['ת. פתיחה'] >= start_date) &
-                (calls_df['ת. פתיחה'] <= end_date)
-            ]
+            calls_df = calls_df[(calls_df['ת. פתיחה'] >= start_date) & (calls_df['ת. פתיחה'] <= end_date)]
 
         if calls_df.empty:
-            st.warning("❗ No service calls found in the selected date range.")
+            st.warning("❗️ No service calls found in the selected date range.")
             return
 
-        # Button to generate the report
         if st.button("📊 Generate Report"):
-            # === Report Creation ===
             output = BytesIO()
             writer = pd.ExcelWriter(output, engine='xlsxwriter')
             workbook = writer.book
@@ -70,7 +84,6 @@ def run_app():
                 total_calls = row['Total_Calls']
                 site_name = row['Site_Name']
                 tab_name = f"Machine_{machine_id}"
-
                 link = f"internal:'{tab_name}'!A1"
                 summary_sheet.write_url(row_num, 0, link, string=str(machine_id))
                 summary_sheet.write(row_num, 1, total_calls)
@@ -80,10 +93,8 @@ def run_app():
                 if header == 'Site Name':
                     summary_sheet.set_column(col_num, col_num, len(header) + 30)
                 else:
-                    summary_sheet.set_column(col_num, col_num, len(header) + 5)
+                    summary_sheet.set_column(col_num, col_num, len(header) + 10)
 
-
-            # === Machine Tabs ===
             for machine in summary_with_site['מס\' מכשיר']:
                 machine_calls = calls_df[calls_df['מס\' מכשיר'] == machine]
                 site_name = summary_with_site[summary_with_site['מס\' מכשיר'] == machine]['Site_Name'].iloc[0]
@@ -104,36 +115,25 @@ def run_app():
                 worksheet = workbook.add_worksheet(tab_name)
                 writer.sheets[tab_name] = worksheet
 
-                worksheet.write_url('A1', "internal:'Summary'!A1", string="🔙 Back to Summary", cell_format=bold_format)
+                worksheet.write_url('A1', "internal:'Summary'!A1", string="🖙 Back to Summary", cell_format=bold_format)
                 worksheet.write('A3', 'Site:', bold_format)
                 worksheet.write('B3', site_name, bold_format)
                 worksheet.write('A5', 'Call Types and Counts:', bold_format)
+
                 for idx, (ct, count) in enumerate(call_types.values):
                     worksheet.write(6 + idx, 0, ct)
                     worksheet.write(6 + idx, 1, count)
 
                 start_row = len(call_types) + 8
-                worksheet.write(start_row, 0, 'Fault Description, Action, and Call Number:', bold_format)
-                fault_action_details.to_excel(writer, sheet_name=tab_name, startrow=start_row + 1, index=False)
 
-                start_row += len(fault_action_details) + 3
-                worksheet.write(start_row, 0, 'Spare Parts Replaced (Actual Quantity):', bold_format)
-                parts_replaced.to_excel(writer, sheet_name=tab_name, startrow=start_row + 1, index=False)
-
-                # Autofit important columns
-                for df in [fault_action_details, parts_replaced]:
-                    for i, col in enumerate(df.columns):
-                        try:
-                            col_len = max(df[col].astype(str).map(len).max(), len(str(col)))
-                            worksheet.set_column(i, i, col_len + 15)
-                        except:
-                            pass
+                start_row = write_simple_table(worksheet, start_row, 'Fault Description, Action, and Call Number:', fault_action_details, writer)
+                start_row = write_simple_table(worksheet, start_row, 'Spare Parts Replaced (Actual Quantity):', parts_replaced, writer)
 
             writer.close()
             output.seek(0)
 
             st.download_button(
-                label="📥 Download Final Report",
+                label="👅 Download Final Report",
                 data=output,
                 file_name="machines_service_calls_report.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -143,4 +143,3 @@ def run_app():
 
 if __name__ == "__main__":
     run_app()
-
