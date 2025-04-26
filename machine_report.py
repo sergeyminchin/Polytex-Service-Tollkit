@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 
 def run_app():
-    st.title("🔧Stations Report by Number of Service Calls")
+    st.title("🔧Machines Report by Number of Service Calls")
     st.write("העלו שני קבצים ובחרו טווח תאריכים או הפיקו את הדוח לכל התקופה")
 
     calls_file = st.file_uploader("העלה את קובץ הקריאות", type=['xlsx'])
