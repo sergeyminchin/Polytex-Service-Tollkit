@@ -10,45 +10,45 @@ def run_app():
     calls_file = st.file_uploader("Upload Service Calls File", type=['xlsx'])
     parts_file = st.file_uploader("Upload Spare Parts File", type=['xlsx'])
 
-    # Date filter checkbox
-    filter_dates = st.checkbox("Filter by Date Range")
-
-    if filter_dates:
-        col1, col2 = st.columns(2)
-        with col1:
-            start_date = st.date_input("Start Date")
-        with col2:
-            end_date = st.date_input("End Date")
-
-    if st.button("📊 Generate Report"):
+    if st.button("📊 Load Files"):
         if calls_file and parts_file:
             calls_df = pd.read_excel(calls_file)
             parts_df = pd.read_excel(parts_file)
 
-            # Parse 'ת. פתיחה' with dayfirst=True
+            # Parse 'ת. פתיחה' column
             calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
 
-            # Show available dates in file
+            # Show available dates
             min_date = calls_df['ת. פתיחה'].min()
             max_date = calls_df['ת. פתיחה'].max()
             st.info(f"📅 Dates in Calls File: From {min_date.date()} to {max_date.date()}")
 
-            # ✅ Correct way to filter after parsing
-            if filter_dates:
-                start_date = pd.to_datetime(start_date)  # convert date to Timestamp
-                end_date = pd.to_datetime(end_date)      # convert date to Timestamp
+            # Filter Dates Option
+            filter_dates = st.checkbox("Filter by Date Range")
 
+            if filter_dates:
+                col1, col2 = st.columns(2)
+                with col1:
+                    start_date = st.date_input("Start Date", value=min_date.date(), min_value=min_date.date(), max_value=max_date.date())
+                with col2:
+                    end_date = st.date_input("End Date", value=max_date.date(), min_value=min_date.date(), max_value=max_date.date())
+
+                # Convert date_input values to Timestamp
+                start_date = pd.to_datetime(start_date)
+                end_date = pd.to_datetime(end_date)
+
+                # Filter the data
                 calls_df = calls_df[
                     (calls_df['ת. פתיחה'] >= start_date) &
                     (calls_df['ת. פתיחה'] <= end_date)
                 ]
 
-            # Check if anything left after filtering
+            # ✅ Check after filtering
             if calls_df.empty:
                 st.warning("❗ No service calls found in the selected date range. Please try a different range.")
                 return
 
-            # ========== Report building ==========
+            # ========== Report Building ==========
             summary_with_site = calls_df.groupby('מס\' מכשיר').agg(
                 Total_Calls=('מס\' מכשיר', 'size'),
                 Site_Name=('תאור האתר', lambda x: x.mode().iloc[0] if not x.mode().empty else 'Unknown Site')
@@ -80,7 +80,7 @@ def run_app():
             for col_num, header in enumerate(headers):
                 summary_sheet.set_column(col_num, col_num, len(header) + 15)
 
-            # ========== Create individual machine tabs ==========
+            # ========== Create Individual Machine Tabs ==========
             for machine in summary_with_site['מס\' מכשיר']:
                 machine_calls = calls_df[calls_df['מס\' מכשיר'] == machine]
                 site_name = summary_with_site[summary_with_site['מס\' מכשיר'] == machine]['Site_Name'].iloc[0]
