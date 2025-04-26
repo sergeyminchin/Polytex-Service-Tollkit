@@ -18,6 +18,11 @@ def run_app():
         with col2:
             end_date = st.date_input("תאריך סיום")
 
+    if calls_df.empty:
+    st.warning("❗ לא נמצאו קריאות שירות בטווח התאריכים שנבחר. אנא נסה טווח אחר.")
+    return
+
+
     if st.button("📊 הפק דוח"):
         if calls_file and parts_file:
             calls_df = pd.read_excel(calls_file)
