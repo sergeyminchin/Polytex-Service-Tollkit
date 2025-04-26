@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 
 def run_app():
-    st.title("🔧Machines Report by Number of Service Calls")
+    st.title("🔧 Machines Report by Number of Service Calls")
     st.write("העלו שני קבצים ובחרו טווח תאריכים או הפיקו את הדוח לכל התקופה")
 
     calls_file = st.file_uploader("העלה את קובץ הקריאות", type=['xlsx'])
@@ -18,11 +18,6 @@ def run_app():
         with col2:
             end_date = st.date_input("תאריך סיום")
 
-    if calls_df.empty:
-        st.warning("❗ לא נמצאו קריאות שירות בטווח התאריכים שנבחר. אנא נסה טווח אחר.")
-        return
-
-
     if st.button("📊 הפק דוח"):
         if calls_file and parts_file:
             calls_df = pd.read_excel(calls_file)
@@ -33,6 +28,12 @@ def run_app():
             if filter_dates:
                 calls_df = calls_df[(calls_df['ת. פתיחה'] >= pd.Timestamp(start_date)) & (calls_df['ת. פתיחה'] <= pd.Timestamp(end_date))]
 
+            # ❗ עכשיו נבדוק אם יש נתונים
+            if calls_df.empty:
+                st.warning("❗ לא נמצאו קריאות שירות בטווח התאריכים שנבחר. אנא נסה טווח אחר.")
+                return
+
+      
             summary_with_site = calls_df.groupby('מס\' מכשיר').agg(
                 Total_Calls=('מס\' מכשיר', 'size'),
                 Site_Name=('תאור האתר', lambda x: x.mode().iloc[0] if not x.mode().empty else 'Unknown Site')
