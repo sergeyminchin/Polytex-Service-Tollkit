@@ -25,8 +25,8 @@ def run_app():
             calls_df = pd.read_excel(calls_file)
             parts_df = pd.read_excel(parts_file)
 
-            # Parse opening dates
-            calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce')
+            # Parse opening dates with dayfirst=True
+            calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
 
             # Show available dates to user
             min_date = calls_df['ת. פתיחה'].min()
@@ -116,7 +116,7 @@ def run_app():
                 worksheet.write(start_row, 0, 'Spare Parts Replaced (Actual Quantity):', bold_format)
                 parts_replaced.to_excel(writer, sheet_name=tab_name, startrow=start_row + 1, index=False)
 
-                # Autofit for important columns
+                # Autofit columns nicely
                 for df in [fault_action_details, parts_replaced]:
                     for i, col in enumerate(df.columns):
                         try:
