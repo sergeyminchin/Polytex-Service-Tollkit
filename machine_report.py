@@ -6,57 +6,56 @@ def run_app():
     st.title("🔧 Machines Report by Number of Service Calls")
     st.write("Upload two files and optionally filter by date range to generate the full report.")
 
-    # File uploaders
     calls_file = st.file_uploader("Upload Service Calls File", type=['xlsx'])
     parts_file = st.file_uploader("Upload Spare Parts File", type=['xlsx'])
 
-    if st.button("📊 Load Files"):
-        if calls_file and parts_file:
-            calls_df = pd.read_excel(calls_file)
-            parts_df = pd.read_excel(parts_file)
+    if calls_file and parts_file:
+        calls_df = pd.read_excel(calls_file)
+        parts_df = pd.read_excel(parts_file)
 
-            # Parse 'ת. פתיחה' column
-            calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
+        # Parse opening dates
+        calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
 
-            # Show available dates
-            min_date = calls_df['ת. פתיחה'].min()
-            max_date = calls_df['ת. פתיחה'].max()
-            st.info(f"📅 Dates in Calls File: From {min_date.date()} to {max_date.date()}")
+        # Available dates
+        min_date = calls_df['ת. פתיחה'].min()
+        max_date = calls_df['ת. פתיחה'].max()
+        st.info(f"📅 Dates in Calls File: From {min_date.date()} to {max_date.date()}")
 
-            # Filter Dates Option
-            filter_dates = st.checkbox("Filter by Date Range")
+        # Date filter
+        filter_dates = st.checkbox("Filter by Date Range", value=True)
 
-            if filter_dates:
-                col1, col2 = st.columns(2)
-                with col1:
-                    start_date = st.date_input("Start Date", value=min_date.date(), min_value=min_date.date(), max_value=max_date.date())
-                with col2:
-                    end_date = st.date_input("End Date", value=max_date.date(), min_value=min_date.date(), max_value=max_date.date())
+        if filter_dates:
+            col1, col2 = st.columns(2)
+            with col1:
+                start_date = st.date_input("Start Date", value=min_date.date(), min_value=min_date.date(), max_value=max_date.date())
+            with col2:
+                end_date = st.date_input("End Date", value=max_date.date(), min_value=min_date.date(), max_value=max_date.date())
 
-                # Convert date_input values to Timestamp
-                start_date = pd.to_datetime(start_date)
-                end_date = pd.to_datetime(end_date)
+            start_date = pd.to_datetime(start_date)
+            end_date = pd.to_datetime(end_date)
 
-                # Filter the data
-                calls_df = calls_df[
-                    (calls_df['ת. פתיחה'] >= start_date) &
-                    (calls_df['ת. פתיחה'] <= end_date)
-                ]
+            # Filter
+            calls_df = calls_df[
+                (calls_df['ת. פתיחה'] >= start_date) &
+                (calls_df['ת. פתיחה'] <= end_date)
+            ]
 
-            # ✅ Check after filtering
-            if calls_df.empty:
-                st.warning("❗ No service calls found in the selected date range. Please try a different range.")
-                return
+        if calls_df.empty:
+            st.warning("❗ No service calls found in the selected date range.")
+            return
 
-            # ========== Report Building ==========
+        # Button to generate the report
+        if st.button("📊 Generate Report"):
+            # === Report Creation ===
+            output = BytesIO()
+            writer = pd.ExcelWriter(output, engine='xlsxwriter')
+            workbook = writer.book
+
             summary_with_site = calls_df.groupby('מס\' מכשיר').agg(
                 Total_Calls=('מס\' מכשיר', 'size'),
                 Site_Name=('תאור האתר', lambda x: x.mode().iloc[0] if not x.mode().empty else 'Unknown Site')
             ).reset_index().sort_values(by='Total_Calls', ascending=False)
 
-            output = BytesIO()
-            writer = pd.ExcelWriter(output, engine='xlsxwriter')
-            workbook = writer.book
             summary_sheet = workbook.add_worksheet('Summary')
             writer.sheets['Summary'] = summary_sheet
 
@@ -80,7 +79,7 @@ def run_app():
             for col_num, header in enumerate(headers):
                 summary_sheet.set_column(col_num, col_num, len(header) + 15)
 
-            # ========== Create Individual Machine Tabs ==========
+            # === Machine Tabs ===
             for machine in summary_with_site['מס\' מכשיר']:
                 machine_calls = calls_df[calls_df['מס\' מכשיר'] == machine]
                 site_name = summary_with_site[summary_with_site['מס\' מכשיר'] == machine]['Site_Name'].iloc[0]
@@ -101,12 +100,9 @@ def run_app():
                 worksheet = workbook.add_worksheet(tab_name)
                 writer.sheets[tab_name] = worksheet
 
-                # Return link to Summary
                 worksheet.write_url('A1', "internal:'Summary'!A1", string="🔙 Back to Summary", cell_format=bold_format)
-
                 worksheet.write('A3', 'Site:', bold_format)
                 worksheet.write('B3', site_name)
-
                 worksheet.write('A5', 'Call Types and Counts:', bold_format)
                 for idx, (ct, count) in enumerate(call_types.values):
                     worksheet.write(6 + idx, 0, ct)
@@ -120,7 +116,7 @@ def run_app():
                 worksheet.write(start_row, 0, 'Spare Parts Replaced (Actual Quantity):', bold_format)
                 parts_replaced.to_excel(writer, sheet_name=tab_name, startrow=start_row + 1, index=False)
 
-                # Autofit columns nicely
+                # Autofit important columns
                 for df in [fault_action_details, parts_replaced]:
                     for i, col in enumerate(df.columns):
                         try:
@@ -138,5 +134,5 @@ def run_app():
                 file_name="machines_service_calls_report.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-        else:
-            st.warning("⚠️ Please upload both required files.")
+    else:
+        st.warning("⚠️ Please upload both required files.")
