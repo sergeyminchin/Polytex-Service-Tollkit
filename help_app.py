@@ -141,7 +141,7 @@ Two modes:
 """)
         elif tool == "🔧 Machine Report Generator":
             st.markdown("""
-### 📈 Machine Report Generator  
+### 🔧 Machine Report Generator  
 Generate a full Excel report showing which machines had the most service calls, and analyze what happened.
 
 🧾 Upload:
