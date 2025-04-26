@@ -76,7 +76,7 @@ def run_app():
                 summary_sheet.write(row_num, 1, total_calls)
                 summary_sheet.write(row_num, 2, site_name)
 
-           for col_num, header in enumerate(headers):
+            for col_num, header in enumerate(headers):
                 if header == 'Site Name':
                     summary_sheet.set_column(col_num, col_num, len(header) + 30)
                 else:
@@ -140,3 +140,7 @@ def run_app():
             )
     else:
         st.warning("⚠️ Please upload both required files.")
+
+if __name__ == "__main__":
+    run_app()
+
