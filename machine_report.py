@@ -102,7 +102,7 @@ def run_app():
 
                 worksheet.write_url('A1', "internal:'Summary'!A1", string="🔙 Back to Summary", cell_format=bold_format)
                 worksheet.write('A3', 'Site:', bold_format)
-                worksheet.write('B3', site_name)
+                worksheet.write('B3', site_name, bold_format)
                 worksheet.write('A5', 'Call Types and Counts:', bold_format)
                 for idx, (ct, count) in enumerate(call_types.values):
                     worksheet.write(6 + idx, 0, ct)
