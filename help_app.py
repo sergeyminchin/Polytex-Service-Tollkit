@@ -87,7 +87,7 @@ Uses data from:
 - חלקים שדווחו בקריאות שירות (Parts Used)
 
 🎯 Understand service costs, part usage, and call distributions.  
-💡 Pair with System Mapper for best accuracy.
+💡 Use System Mapper first for the uploaded files to ensure the best accuracy.
 """)
 
         elif tool == "📂 Service Distribution Transformer":
@@ -95,7 +95,7 @@ Uses data from:
 ### 📂 Service Distribution Transformer  
 Normalize system models like DX00, R310.
 
-✅ Useful for logistics — but prefer System Mapper when possible.
+✅ Useful, but I prefer System Mapper when possible.
 """)
 
         elif tool == "📦 Spare Parts Usage":
@@ -103,7 +103,7 @@ Normalize system models like DX00, R310.
 ### 📦 Spare Parts Usage  
 Upload Priority's “Parts Used in Service Calls” and filter by part, model, or technician.
 
-Great for logistics and purchasing insights.
+💡 Use System Mapper first for the uploaded files to ensure the best accuracy.
 """)
 
         elif tool == "🧠 System Mapper":
@@ -137,7 +137,7 @@ Upload the PM8 'Users' Excel file.
 
 Two modes:
 - Group and Export (by Department / Limit Group)
-- Modify and Export (rename and export updated file)
+- Modify and Export (rename and export the updated file)
 """)
         elif tool == "🔧 Machine Report Generator":
             st.markdown("""
@@ -157,6 +157,7 @@ Generate a full Excel report showing which machines had the most service calls, 
 
 🧭 Click any machine in the summary tab to jump to its detailed page.  
 🔁 Each sheet has a link to return to the summary.
+💡 Use System Mapper first for the uploaded files to ensure the best accuracy.
 """)
 
 
