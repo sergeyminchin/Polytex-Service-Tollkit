@@ -10,7 +10,7 @@ def run_app():
     calls_file = st.file_uploader("Upload Service Calls File", type=['xlsx'])
     parts_file = st.file_uploader("Upload Spare Parts File", type=['xlsx'])
 
-    # Date filter
+    # Date filter checkbox
     filter_dates = st.checkbox("Filter by Date Range")
 
     if filter_dates:
@@ -25,7 +25,7 @@ def run_app():
             calls_df = pd.read_excel(calls_file)
             parts_df = pd.read_excel(parts_file)
 
-            # Parse opening dates with dayfirst=True
+            # Convert 'ת. פתיחה' to datetime, dayfirst=True
             calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
 
             # Show available dates to user
@@ -33,18 +33,19 @@ def run_app():
             max_date = calls_df['ת. פתיחה'].max()
             st.info(f"📅 Dates in Calls File: From {min_date.date()} to {max_date.date()}")
 
+            # ✅ Only now filter if requested
             if filter_dates:
                 calls_df = calls_df[
                     (calls_df['ת. פתיחה'] >= pd.Timestamp(start_date)) &
                     (calls_df['ת. פתיחה'] <= pd.Timestamp(end_date))
                 ]
 
-            # Check if anything left after filtering
+            # ✅ Now check if after filtering anything is left
             if calls_df.empty:
                 st.warning("❗ No service calls found in the selected date range. Please try a different range.")
                 return
 
-            # Group and summarize
+            # ========== Continue to report generation ==========
             summary_with_site = calls_df.groupby('מס\' מכשיר').agg(
                 Total_Calls=('מס\' מכשיר', 'size'),
                 Site_Name=('תאור האתר', lambda x: x.mode().iloc[0] if not x.mode().empty else 'Unknown Site')
@@ -76,7 +77,7 @@ def run_app():
             for col_num, header in enumerate(headers):
                 summary_sheet.set_column(col_num, col_num, len(header) + 15)
 
-            # Create individual machine sheets
+            # ========== Create individual machine tabs ==========
             for machine in summary_with_site['מס\' מכשיר']:
                 machine_calls = calls_df[calls_df['מס\' מכשיר'] == machine]
                 site_name = summary_with_site[summary_with_site['מס\' מכשיר'] == machine]['Site_Name'].iloc[0]
@@ -97,7 +98,7 @@ def run_app():
                 worksheet = workbook.add_worksheet(tab_name)
                 writer.sheets[tab_name] = worksheet
 
-                # Add return link to Summary
+                # Return link to Summary
                 worksheet.write_url('A1', "internal:'Summary'!A1", string="🔙 Back to Summary", cell_format=bold_format)
 
                 worksheet.write('A3', 'Site:', bold_format)
@@ -116,7 +117,7 @@ def run_app():
                 worksheet.write(start_row, 0, 'Spare Parts Replaced (Actual Quantity):', bold_format)
                 parts_replaced.to_excel(writer, sheet_name=tab_name, startrow=start_row + 1, index=False)
 
-                # Autofit columns nicely
+                # Autofit important columns
                 for df in [fault_action_details, parts_replaced]:
                     for i, col in enumerate(df.columns):
                         try:
