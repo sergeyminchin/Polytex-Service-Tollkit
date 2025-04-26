@@ -77,7 +77,7 @@ def run_app():
                 summary_sheet.write(row_num, 2, site_name)
 
             for col_num, header in enumerate(headers):
-                summary_sheet.set_column(col_num, col_num, len(header) + 15)
+                summary_sheet.set_column(col_num, col_num, len(header) + 30)
 
             # === Machine Tabs ===
             for machine in summary_with_site['מס\' מכשיר']:
