@@ -76,8 +76,12 @@ def run_app():
                 summary_sheet.write(row_num, 1, total_calls)
                 summary_sheet.write(row_num, 2, site_name)
 
-            for col_num, header in enumerate(headers):
-                summary_sheet.set_column(col_num, col_num, len(header) + 30)
+           for col_num, header in enumerate(headers):
+                if header == 'Site Name':
+                    summary_sheet.set_column(col_num, col_num, len(header) + 30)
+                else:
+                    summary_sheet.set_column(col_num, col_num, len(header) + 10)
+
 
             # === Machine Tabs ===
             for machine in summary_with_site['מס\' מכשיר']:
