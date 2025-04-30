@@ -3,7 +3,6 @@ import pandas as pd
 from io import BytesIO
 
 def run_app():
-    st.set_page_config(page_title="Spare Parts by Site", layout="centered")
     st.title("📦 Spare Parts Report by Site")
 
     st.markdown("Upload the **Parts Report** and **Service Calls Report** to generate a site-based summary of replaced parts.")
