@@ -160,6 +160,21 @@ Generate a full Excel report showing which machines had the most service calls, 
 💡 Use System Mapper first for the uploaded files to ensure the best accuracy.
 """)
 
+elif tool == "📦 Spare Parts by Site":
+    st.markdown("""
+### 📦 Spare Parts by Site  
+Upload two reports:
+- חלקים שדווחו בקריאות שירות (Parts Used)
+- קריאות שירות (Service Calls)
+
+Choose one or more sites to analyze.  
+📥 The output Excel file includes a separate sheet for each selected site, listing the parts used and their quantities.
+
+✅ Autofit column widths  
+✅ Hebrew/Unicode support  
+✅ Designed for detailed site-based spare part tracking
+""")
+
 
     st.markdown("""---  
 📧 Contact support: **sergeym@polytex.co.il**""")
