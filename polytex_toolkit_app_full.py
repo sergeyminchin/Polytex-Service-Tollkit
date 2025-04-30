@@ -25,6 +25,7 @@ app_options = {
     "👥 User Group Splitter": "ugs",
     "📦 Unreturned Items Detector": "nri",
     "🔧 Machine Report Generator": "machine_report",
+    "📦 Spare Parts by Site": "parts_by_site_report",
     "❓ Help & Guide": "help_app",
     "🔗 Helpful Links": "helpful_links"
 }
@@ -94,7 +95,8 @@ if "tool_config" not in st.session_state:
             "📦 Unreturned Items Detector": {"visible": True, "order": 12},
             "❓ Help & Guide": {"visible": True, "order": 13},
             "🔗 Helpful Links": {"visible": True, "order": 14},
-            "🔧 Machine Report Generator": {"visible": True, "order": 15}
+            "🔧 Machine Report Generator": {"visible": True, "order": 15},
+            "📦 Spare Parts by Site": {"visible": True, "order": 15}
         }
         st.session_state.tool_config = default_config
         save_config(default_config)
