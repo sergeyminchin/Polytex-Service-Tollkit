@@ -5,7 +5,7 @@ from streamlit_sortables import sort_items
 from google.oauth2 import service_account
 from google.cloud import firestore
 
-st.set_page_config(page_title="Polytex Service Tools :flag-il: ", page_icon="politex.ico", layout="centered")
+st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
 
 # ===============================
 # 📦 Tool Definitions
@@ -134,7 +134,7 @@ try:
 except:
     st.warning("Logo not found.")
 
-st.markdown("<h1 style='font-size: 58px;'>🛠️ Polytex Service Toolkit</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 58px;'>🛠️ Polytex Service Toolkit :flag-il:</h1>", unsafe_allow_html=True)
 
 # ===============================
 # 📋 Filter and Sort Tools for Menu
