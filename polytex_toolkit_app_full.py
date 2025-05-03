@@ -5,7 +5,7 @@ from streamlit_sortables import sort_items
 from google.oauth2 import service_account
 from google.cloud import firestore
 
-st.set_page_config(page_title="Polytex Service Tools", page_icon="politex.ico", layout="centered")
+st.set_page_config(page_title="Polytex Service Tools :flag-il: ", page_icon="politex.ico", layout="centered")
 
 # ===============================
 # 📦 Tool Definitions
