@@ -99,8 +99,15 @@ def run_app():
                 call_types = machine_calls['סוג קריאה'].fillna('Not Defined').value_counts().reset_index()
                 call_types.columns = ['Call Type', 'Count']
 
-                fault_action_details = machine_calls[["מס' קריאה", 'תאור תקלה', 'תאור קוד פעולה']].drop_duplicates()
-                fault_action_details.rename(columns={"מס' קריאה": 'Call Number'}, inplace=True)
+                expected_columns = ["מס' קריאה", 'תאור תקלה', 'תאור קוד פעולה']
+                available_columns = [col for col in expected_columns if col in machine_calls.columns]
+
+                if available_columns:
+                    fault_action_details = machine_calls[available_columns].drop_duplicates()
+                    if "מס' קריאה" in fault_action_details.columns:
+                        fault_action_details.rename(columns={"מס' קריאה": 'Call Number'}, inplace=True)
+                else:
+                    fault_action_details = pd.DataFrame(columns=['Call Number', 'תאור תקלה', 'תאור קוד פעולה'])
 
                 relevant_parts = parts_df[
                     (parts_df['מספר קריאה'].isin(machine_calls["מס' קריאה"])) &
