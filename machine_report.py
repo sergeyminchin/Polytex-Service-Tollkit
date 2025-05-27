@@ -85,7 +85,7 @@ def run_app():
                 site_name = row['Site_Name']
                 tab_name = f"Machine_{machine_id}"
                 link = f"internal:'{tab_name}'!A1"
-                summary_sheet.write_url(row_num, 0, link, string=str(machine_id))
+                summary_sheet.write_url(row_num, 0, link, string=str(int(machine_id)))
                 summary_sheet.write(row_num, 1, total_calls)
                 summary_sheet.write(row_num, 2, site_name)
 
