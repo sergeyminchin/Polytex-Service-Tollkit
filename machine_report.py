@@ -33,15 +33,12 @@ def run_app():
         calls_df = pd.read_excel(calls_file)
         parts_df = pd.read_excel(parts_file)
 
-        # Parse opening dates
         calls_df['ת. פתיחה'] = pd.to_datetime(calls_df['ת. פתיחה'], errors='coerce', dayfirst=True)
 
-        # Available dates
         min_date = calls_df['ת. פתיחה'].min()
         max_date = calls_df['ת. פתיחה'].max()
         st.info(f"🗕️ Dates in Calls File: From {min_date.date()} to {max_date.date()}")
 
-        # Date filter
         filter_dates = st.checkbox("Filter by Date Range", value=True)
 
         if filter_dates:
@@ -65,8 +62,8 @@ def run_app():
             writer = pd.ExcelWriter(output, engine='xlsxwriter')
             workbook = writer.book
 
-            summary_with_site = calls_df.groupby('מס\' מכשיר').agg(
-                Total_Calls=('מס\' מכשיר', 'size'),
+            summary_with_site = calls_df.groupby("מס' מכשיר").agg(
+                Total_Calls=("מס' מכשיר", 'size'),
                 Site_Name=('תאור האתר', lambda x: x.mode().iloc[0] if not x.mode().empty else 'Unknown Site')
             ).reset_index().sort_values(by='Total_Calls', ascending=False)
 
@@ -80,12 +77,12 @@ def run_app():
                 summary_sheet.write(0, col_num, header, bold_format)
 
             for row_num, (index, row) in enumerate(summary_with_site.iterrows(), start=1):
-                machine_id = row['מס\' מכשיר']
+                machine_id = str(row["מס' מכשיר"]).split('.')[0]
                 total_calls = row['Total_Calls']
                 site_name = row['Site_Name']
                 tab_name = f"Machine_{machine_id}"
                 link = f"internal:'{tab_name}'!A1"
-                summary_sheet.write_url(row_num, 0, link, string=str(int(machine_id)))
+                summary_sheet.write_url(row_num, 0, link, string=machine_id)
                 summary_sheet.write(row_num, 1, total_calls)
                 summary_sheet.write(row_num, 2, site_name)
 
@@ -95,23 +92,24 @@ def run_app():
                 else:
                     summary_sheet.set_column(col_num, col_num, len(header) + 10)
 
-            for machine in summary_with_site['מס\' מכשיר']:
-                machine_calls = calls_df[calls_df['מס\' מכשיר'] == machine]
-                site_name = summary_with_site[summary_with_site['מס\' מכשיר'] == machine]['Site_Name'].iloc[0]
+            for original_machine_id in summary_with_site["מס' מכשיר"]:
+                machine_id = str(original_machine_id).split('.')[0]
+                machine_calls = calls_df[calls_df["מס' מכשיר"] == original_machine_id]
+                site_name = summary_with_site[summary_with_site["מס' מכשיר"] == original_machine_id]['Site_Name'].iloc[0]
                 call_types = machine_calls['סוג קריאה'].fillna('Not Defined').value_counts().reset_index()
                 call_types.columns = ['Call Type', 'Count']
 
-                fault_action_details = machine_calls[['מס. קריאה', 'תאור תקלה', 'תאור קוד פעולה']].drop_duplicates()
-                fault_action_details.rename(columns={'מס. קריאה': 'Call Number'}, inplace=True)
+                fault_action_details = machine_calls[["מס' קריאה", 'תאור תקלה', 'תאור קוד פעולה']].drop_duplicates()
+                fault_action_details.rename(columns={"מס' קריאה": 'Call Number'}, inplace=True)
 
                 relevant_parts = parts_df[
-                    (parts_df['מספר קריאה'].isin(machine_calls['מס. קריאה'])) &
+                    (parts_df['מספר קריאה'].isin(machine_calls["מס' קריאה"])) &
                     (parts_df['כמות בפועל'] > 0)
                 ]
-                parts_replaced = relevant_parts.groupby(['מק\"ט - חלק', 'תאור מוצר - חלק']).agg({'כמות בפועל': 'sum'}).reset_index()
+                parts_replaced = relevant_parts.groupby(['מק"ט - חלק', 'תאור מוצר - חלק']).agg({'כמות בפועל': 'sum'}).reset_index()
                 parts_replaced.columns = ['Part Number', 'Part Description', 'Total Quantity']
 
-                tab_name = f"Machine_{machine}"
+                tab_name = f"Machine_{machine_id}"
                 worksheet = workbook.add_worksheet(tab_name)
                 writer.sheets[tab_name] = worksheet
 
@@ -133,7 +131,7 @@ def run_app():
             output.seek(0)
 
             st.download_button(
-                label="👅 Download Final Report",
+                label="💅 Download Final Report",
                 data=output,
                 file_name="machines_service_calls_report.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
