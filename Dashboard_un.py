@@ -17,8 +17,8 @@ if file_1 and file_2:
     label_2 = st.sidebar.text_input("Label for Second File", value="Dataset 2")
 
     # Load all sheets
-    total_1 = pd.read_excel(file_1, sheet_name='כמות קריאות').iloc[0, 0]
-    total_2 = pd.read_excel(file_2, sheet_name='כמות קריאות').iloc[0, 0]
+    total_1 = pd.read_excel(file_1, sheet_name='DataSheet').iloc[0, 0]
+    total_2 = pd.read_excel(file_2, sheet_name='DataSheet').iloc[0, 0]
 
     total_calls_summary = pd.DataFrame({
         'Period': [label_1, label_2],
